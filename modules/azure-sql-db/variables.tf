@@ -49,7 +49,7 @@ variable sql_ad_admin_object_id {
 
 # Centralized logging and auditing for production SQL environments
 variable auditing_storage_account {
-  description = "Storage account destination for database audit logs. Only applies in prd environment"
+  description = "Storage account destination for database audit logs. Only applies in prd environment."
   type = object({
     subscription_id      = string,
     storage_account_name = string,
@@ -60,7 +60,7 @@ variable auditing_storage_account {
     condition = (
       length(var.auditing_storage_account.subscription_id) > 10
     )
-    error_message = "Auditing storage account subscription must be provided and greater than 10 characters in length"
+    error_message = "Auditing storage account subscription must be provided and greater than 10 characters in length."
   }
 
   validation {
@@ -68,13 +68,13 @@ variable auditing_storage_account {
       length(var.auditing_storage_account.storage_account_name) > 3 &&
       length(var.auditing_storage_account.storage_account_name) < 24
     )
-    error_message = "Auditing storage account name must be 3-24 characters in length"
+    error_message = "Auditing storage account name must be 3-24 characters in length."
   }
 
   validation {
     condition = (
       length(var.auditing_storage_account.resource_group_name) > 3
     )
-    error_message = "Auditing storage account resource group must be provided"
+    error_message = "Auditing storage account resource group must be provided."
   }
 }
