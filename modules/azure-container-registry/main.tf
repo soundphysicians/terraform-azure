@@ -31,7 +31,7 @@ variable "name" {
   nullable    = false
 }
 
-variable "shared_subscription_id" {
+variable "subscription_id" {
   type        = string
   description = "The Container Registry subscription"
   nullable    = false
@@ -40,7 +40,7 @@ variable "shared_subscription_id" {
 provider "azurerm" {
   skip_provider_registration = true
   alias                      = "shared"
-  subscription_id            = var.shared_subscription_id
+  subscription_id            = var.subscription_id
   features {}
 }
 
