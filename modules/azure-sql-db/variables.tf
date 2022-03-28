@@ -4,9 +4,12 @@ variable "prefix" {}
 # Name of the environment to deploy to
 variable "environment" {
   description = "The name of the environment to deploy to"
-  validation = {
-    condition = conta
+  validation {
+    condition     = contains(["tdd", "dev", "tst", "prd", "stage"], var.environment)
+    error_message = "Valid values for var: environment are (tdd, dev, tst, prd, stage)"
   }
+
+  default = "tdd"
 }
 
 # Location Where All Resources Will Be Deployed
@@ -55,7 +58,7 @@ variable sql_ad_admin_object_id {
       var.sql_ad_admin_object_id
       )
     )
-    error_message = "Expected sql_ad_admin_object_id to be a valid UUID, got ${var.sql_ad_admin_object_id}."
+    error_message = "Expected sql_ad_admin_object_id to be a valid UUID."
   }
 }
 
