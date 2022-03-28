@@ -11,8 +11,8 @@ resource "mssql_user" "master" {
   server {
     host = var.sql_server_fqdn
     login {
-      username = var.sql_server_admin_username.value
-      password = var.sql_server_admin_password.value
+      username = var.sql_server_admin_username
+      password = var.sql_server_admin_password
     }
   }
   database  = "master"
@@ -25,8 +25,8 @@ resource "mssql_user" "appDb" {
   server {
     host = var.sql_server_fqdn
     login {
-      username = var.sql_server_admin_username.value
-      password = var.sql_server_admin_password.value
+      username = var.sql_server_admin_username
+      password = var.sql_server_admin_password
     }
   }
   database  = var.db_name

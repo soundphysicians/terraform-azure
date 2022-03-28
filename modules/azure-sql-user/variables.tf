@@ -3,17 +3,13 @@ variable "sql_server_fqdn" {
 }
 
 variable "sql_server_admin_username" {
-  description = "Key vault secret containing the sql admin username"
-  type = object({
-    value = string
-  })
+  description = "Name of the sql administrator login"
+  type        = string
 }
 
 variable "sql_server_admin_password" {
-  description = "Key vault secret containing the sql admin password"
-  type = object({
-    value = string
-  })
+  description = "Password for the sql administrator login"
+  type        = string
 }
 
 variable "db_name" {
