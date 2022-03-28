@@ -135,8 +135,8 @@ resource "azurerm_mssql_firewall_rule" "sql_firewall_allow_azure" {
 
 resource "azurerm_mssql_firewall_rule" "sql_firewall_rules" {
   for_each         = { for rule in var.firewall_rules : rule.name => rule }
-  name             = rule.key
+  name             = each.key
   server_id        = azurerm_mssql_server.server.id
-  start_ip_address = rule.value["start_ip_address"]
-  end_ip_address   = rule.value["end_ip_address"]
+  start_ip_address = each.value["start_ip_address"]
+  end_ip_address   = each.value["end_ip_address"]
 }
