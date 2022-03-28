@@ -65,6 +65,7 @@ variable sql_ad_admin_object_id {
 # Centralized logging and auditing for production SQL environments
 variable auditing_storage_account {
   description = "Storage account destination for database audit logs. Only applies in prd environment."
+  nullable    = true
   type = object({
     subscription_id      = string,
     storage_account_name = string,

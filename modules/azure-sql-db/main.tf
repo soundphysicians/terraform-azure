@@ -41,7 +41,7 @@ data "azurerm_storage_account" "audit" {
 # ------------------------------------------------------------------------
 resource "azurecaf_name" "server" {
   resource_type = "azurerm_mssql_server"
-  prefixes      = [var.project, var.environment]
+  prefixes      = [var.prefix, var.environment]
   suffixes      = [var.base_name]
 }
 
