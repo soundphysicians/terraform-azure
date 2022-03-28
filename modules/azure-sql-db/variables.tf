@@ -2,7 +2,12 @@
 variable "prefix" {}
 
 # Name of the environment to deploy to
-variable "environment" {}
+variable "environment" {
+  description = "The name of the environment to deploy to"
+  validation = {
+    condition = conta
+  }
+}
 
 # Location Where All Resources Will Be Deployed
 variable "location" {}
@@ -16,27 +21,25 @@ variable "resource_group_name" {}
 #   environment:    tst
 #   base_name:      blah
 # Result:
-#   sql server name:      sbs-tst-sqlserver-blah
+#   sql server name:      sbs-tst-sql-blah
 #   sql database name:    sbs-tst-sqldb-blah
 variable "base_name" {}
+
+variable "application_name" {
+  type        = string
+  description = "The name of your application"
+  default     = ""
+}
 
 # Database SKU
 variable sql_perf_level {
   default = "S0"
 }
 
-# KeyVault secret for the sql admin username
-variable sql_admin_username_secret {
-  type = object({
-    value = string
-  })
-}
-
-# KeyVault secret for the sql admin password
-variable sql_admin_password_secret {
-  type = object({
-    value = string
-  })
+variable administrator_login {
+  type        = string
+  description = "The username for the SQL sa administrator account"
+  default     = "sqladmin"
 }
 
 variable sql_ad_admin_username {
@@ -45,6 +48,15 @@ variable sql_ad_admin_username {
 
 variable sql_ad_admin_object_id {
   description = "Object ID of database AD administrator"
+
+  validation {
+    condition = can(regex(
+      "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
+      var.sql_ad_admin_object_id
+      )
+    )
+    error_message = "Expected sql_ad_admin_object_id to be a valid UUID, got ${var.sql_ad_admin_object_id}."
+  }
 }
 
 # Centralized logging and auditing for production SQL environments
@@ -77,4 +89,15 @@ variable auditing_storage_account {
     )
     error_message = "Auditing storage account resource group must be provided."
   }
+}
+
+variable firewall_rules {
+  description = "Exceptions to allow access to certain IP addresses"
+  type = list(object({
+    name             = string,
+    start_ip_address = string,
+    end_ip_address   = string
+  }))
+
+  default = []
 }

@@ -4,37 +4,11 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 2.97.0"
     }
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "1.2.11"
+    }
   }
-}
-
-variable "environment" {
-  type        = string
-  description = "Azure Environment Name"
-  nullable    = false
-}
-
-variable "project" {
-  type        = string
-  description = "Project Name"
-  nullable    = false
-}
-
-variable "resource_group_name" {
-  type        = string
-  description = "Resource Group Name"
-  nullable    = false
-}
-
-variable "name" {
-  type        = string
-  description = "Container Registry Name. Must be alpha numeric only"
-  nullable    = false
-}
-
-variable "subscription_id" {
-  type        = string
-  description = "The Container Registry subscription"
-  nullable    = false
 }
 
 provider "azurerm" {
@@ -49,15 +23,25 @@ data "azurerm_resource_group" "rg" {
   provider = azurerm.shared
 }
 
+resource "azurecaf_name" "registry" {
+  resource_type = "azurerm_container_registry"
+  prefixes      = [var.project, local.environment]
+}
+
+locals {
+  environment   = "shr"
+  registry_name = coalesce(var.name, azurecaf_name.registry.result)
+}
+
 # ----------------------------------------------
 # Container Registry 
 # - Creates the following services in the tdd environment only
 #   Azure Container Registry
 # ----------------------------------------------
 resource "azurerm_container_registry" "this" {
-  count               = var.environment == "tdd" ? 1 : 0
+  count               = var.should_create ? 1 : 0
   provider            = azurerm.shared
-  name                = var.name
+  name                = local.registry_name
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -75,7 +59,7 @@ resource "azurerm_container_registry" "this" {
   }
 
   tags = {
-    environment = "shr",
+    environment = local.environment,
     project     = var.project
   }
 }
@@ -87,17 +71,6 @@ resource "azurerm_container_registry" "this" {
 # ----------------------------------------------
 data "azurerm_container_registry" "this" {
   provider            = azurerm.shared
-  name                = var.name
+  name                = local.registry_name
   resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-output "login_server" {
-  value = data.azurerm_container_registry.this.login_server
-}
-output "admin_username" {
-  value = data.azurerm_container_registry.this.admin_username
-}
-
-output "admin_password" {
-  value = data.azurerm_container_registry.this.admin_password
 }

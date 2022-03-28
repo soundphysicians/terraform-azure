@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.97.0"
+    }
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "1.2.11"
+    }
+  }
+}
+
 # ------------------------------------------------------------------------
 # Stores the current connection information (Resource Manager and AD)
 # ------------------------------------------------------------------------
@@ -7,8 +20,14 @@ data "azuread_client_config" "current" {}
 # ------------------------------------------------------------------------
 # Storage Account for Function App
 # ------------------------------------------------------------------------
+resource "azurecaf_name" "storage" {
+  resource_type = "azurerm_storage_account"
+  prefixes      = [var.project, var.environment]
+  suffixes      = [var.base_name]
+}
+
 resource "azurerm_storage_account" "storage" {
-  name                     = "${var.prefix}${var.environment}sa${var.base_name}"
+  name                     = azurecaf_name.storage.result
   location                 = var.location
   resource_group_name      = var.resource_group_name
   account_kind             = "StorageV2"
@@ -27,8 +46,14 @@ resource "azurerm_storage_account" "storage" {
 # ------------------------------------------------------------------------
 # Service Plan
 # ------------------------------------------------------------------------
+resource "azurecaf_name" "plan" {
+  resource_type = "azurerm_app_service_plan"
+  prefixes      = [var.prefix, var.environment]
+  suffixes      = [var.base_name]
+}
+
 resource "azurerm_app_service_plan" "plan" {
-  name                = "${var.prefix}-${var.environment}-asplan-${var.base_name}"
+  name                = azurecaf_name.plan.result
   location            = var.location
   resource_group_name = var.resource_group_name
   kind                = "FunctionApp"
@@ -57,7 +82,7 @@ locals {
 # Azure AD Application Registration
 # ------------------------------------------------------------------------
 resource "azuread_application" "app" {
-  display_name                   = "${var.prefix}-${var.environment}-fn-${var.base_name}"
+  display_name                   = azurecaf_name.fn.result
   group_membership_claims        = ["None"]
   owners                         = [data.azuread_client_config.current.object_id]
   sign_in_audience               = "AzureADMyOrg"
@@ -114,8 +139,14 @@ resource "azuread_service_principal" "app" {
 # ------------------------------------------------------------------------
 # Function App
 # ------------------------------------------------------------------------
+resource "azurecaf_name" "fn" {
+  resource_type = "azurerm_function_app"
+  prefixes      = [var.project, var.environment]
+  suffixes      = [var.base_name]
+}
+
 resource "azurerm_function_app" "app" {
-  name                = "${var.prefix}-${var.environment}-fn-${var.base_name}"
+  name                = azurecaf_name.fn.result
   location            = var.location
   resource_group_name = var.resource_group_name
   version             = "~4"

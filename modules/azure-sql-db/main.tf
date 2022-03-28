@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.97.0"
+    }
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "1.2.11"
+    }
+  }
+}
+
 # ------------------------------------------------------------------------
 # Stores the current connection information
 # ------------------------------------------------------------------------
@@ -26,14 +39,26 @@ data "azurerm_storage_account" "audit" {
 #   Name: {prefix}-{env}-sqlserver-{base_name}
 #   Example: sbs-tst-sqlserver-billing
 # ------------------------------------------------------------------------
+resource "azurecaf_name" "server" {
+  resource_type = "azurerm_mssql_server"
+  prefixes      = [var.project, var.environment]
+  suffixes      = [var.base_name]
+}
+
+resource "random_password" "password" {
+  length           = 32
+  special          = true
+  override_special = "_%@"
+}
+
 resource "azurerm_mssql_server" "server" {
-  name                         = "${var.prefix}-${var.environment}-sqlserver-${var.base_name}"
+  name                         = azurecaf_name.server.result
   resource_group_name          = var.resource_group_name
   location                     = var.location
   version                      = "12.0"
   minimum_tls_version          = "1.2"
-  administrator_login          = var.sql_admin_username_secret.value
-  administrator_login_password = var.sql_admin_password_secret.value
+  administrator_login          = var.administrator_login.value
+  administrator_login_password = random_password.password.result
 
   identity {
     type = "SystemAssigned"
@@ -73,11 +98,9 @@ resource "azurerm_mssql_server_extended_auditing_policy" "server" {
 
 # ------------------------------------------------------------------------
 # Azure SQL Server Database
-#   Name: {prefix}-{env}-sqlserver-{name}
-#   Example: sbs-tst-sqlserver-billing
 # ------------------------------------------------------------------------
 resource "azurerm_mssql_database" "db" {
-  name                 = "${var.prefix}-${var.environment}-sqldb-${var.base_name}"
+  name                 = var.application_name
   server_id            = azurerm_mssql_server.server.id
   sku_name             = var.sql_perf_level
   storage_account_type = "GRS" # Default: GRS
@@ -110,28 +133,10 @@ resource "azurerm_mssql_firewall_rule" "sql_firewall_allow_azure" {
   end_ip_address   = "0.0.0.0"
 }
 
-resource "azurerm_mssql_firewall_rule" "sql_firewall_tacoma_office" {
-  name             = "TacomaOffice"
+resource "azurerm_mssql_firewall_rule" "sql_firewall_rules" {
+  for_each         = { for rule in var.firewall_rules : rule.name => rule }
+  name             = role.key
   server_id        = azurerm_mssql_server.server.id
-  start_ip_address = "205.182.167.11"
-  end_ip_address   = "205.182.167.11"
-}
-
-resource "azurerm_mssql_firewall_rule" "sql_firewall_remote_desktop" {
-  name             = "RemoteDesktop"
-  server_id        = azurerm_mssql_server.server.id
-  start_ip_address = "4.31.201.91"
-  end_ip_address   = "4.31.201.91"
-}
-
-output "sql_fully_qualified_domain_name" {
-  value       = azurerm_mssql_server.server.fully_qualified_domain_name
-  description = "The fully qualified domain name of the SQL server"
-  sensitive   = false
-}
-
-output "sql_database_name" {
-  value       = azurerm_mssql_database.db.name
-  description = "The name of the database on the Azure SQL server"
-  sensitive   = false
+  start_ip_address = role.value["start_ip_address"]
+  end_ip_address   = role.value["end_ip_address"]
 }
