@@ -75,7 +75,7 @@ variable auditing_storage_account {
   validation {
     condition = (
       var.auditing_storage_account == null || (
-        length(var.auditing_storage_account.subscription_id) > 10
+        length(try(var.auditing_storage_account.subscription_id, "")) > 10
       )
     )
     error_message = "Auditing storage account subscription must be provided and greater than 10 characters in length."
@@ -84,8 +84,8 @@ variable auditing_storage_account {
   validation {
     condition = (
       var.auditing_storage_account == null || (
-        length(var.auditing_storage_account.storage_account_name) > 3 &&
-        length(var.auditing_storage_account.storage_account_name) < 24
+        length(try(var.auditing_storage_account.storage_account_name, "")) > 3 &&
+        length(try(var.auditing_storage_account.storage_account_name, "")) < 24
       )
     )
     error_message = "Auditing storage account name must be 3-24 characters in length."
@@ -94,7 +94,7 @@ variable auditing_storage_account {
   validation {
     condition = (
       var.auditing_storage_account == null || (
-        length(var.auditing_storage_account.resource_group_name) > 3
+        length(try(var.auditing_storage_account.resource_group_name, "")) > 3
       )
     )
     error_message = "Auditing storage account resource group must be provided."
