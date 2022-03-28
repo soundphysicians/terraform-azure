@@ -19,7 +19,7 @@ data "azurerm_client_config" "current" {}
 provider "azurerm" {
   skip_provider_registration = true
   alias                      = "audit"
-  subscription_id            = var.auditing_storage_account.subscription_id
+  subscription_id            = try(var.auditing_storage_account.subscription_id, azurerm_client_config.current.subscription_id)
   features {}
 }
 
