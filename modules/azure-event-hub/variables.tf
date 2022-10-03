@@ -3,11 +3,6 @@ variable "namespace_name" {
   type        = string
 }
 
-variable "storage_account_id" {
-  description = "The ID of the storage account used for capturing events"
-  type        = string
-}
-
 variable "storage_account_name" {
   description = "The name of the storage account used for capturing events"
   type        = string

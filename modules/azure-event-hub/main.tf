@@ -1,9 +1,14 @@
 # -----------------------------------------------------------------------------
 # Storage account container for capturing events
 # -----------------------------------------------------------------------------
+data "azurerm_storage_account" "capturestorage" {
+  name = var.storage_account_name
+  resource_group_name = var.resource_group_name
+}
+
 resource "azurerm_storage_container" "capturestorage" {
   name                  = var.name
-  storage_account_name  = var.storage_account_name
+  storage_account_name  = data.azurerm_storage_account.capturestorage.name
   container_access_type = "private" # default: private
 }
 
@@ -26,7 +31,7 @@ resource "azurerm_eventhub" "hub" {
       name                = "EventHubArchive.AzureBlockBlob"
       archive_name_format = "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
       blob_container_name = azurerm_storage_container.capturestorage.name
-      storage_account_id  = var.storage_account_id
+      storage_account_id  = data.azurerm_storage_account.capturestorage.id
     }
   }
 }
@@ -39,9 +44,9 @@ resource "azurerm_eventhub_authorization_rule" "producers" {
   for_each = { for p in var.producers : p.name => p }
 
   name                = each.key
-  namespace_name      = var.namespace_name
-  eventhub_name       = var.name
-  resource_group_name = var.resource_group_name
+  namespace_name      = azurerm_eventhub.hub.namespace_name
+  eventhub_name       = azurerm_eventhub.hub.name
+  resource_group_name = azurerm_eventhub.hub.resource_group_name
   listen              = false
   send                = true
   manage              = false
@@ -55,9 +60,9 @@ resource "azurerm_eventhub_authorization_rule" "consumers" {
   for_each = { for cg in var.consumer_groups : cg.name => cg }
 
   name                = each.value.name
-  namespace_name      = var.namespace_name
-  eventhub_name       = var.name
-  resource_group_name = var.resource_group_name
+  namespace_name      = azurerm_eventhub.hub.namespace_name
+  eventhub_name       = azurerm_eventhub.hub.name
+  resource_group_name = azurerm_eventhub.hub.resource_group_name
   listen              = true
   send                = false
   manage              = false
@@ -71,8 +76,8 @@ resource "azurerm_eventhub_consumer_group" "consumers" {
   for_each = { for cg in var.consumer_groups : cg.name => cg }
 
   name                = each.value.name
-  namespace_name      = var.namespace_name
-  eventhub_name       = var.name
-  resource_group_name = var.resource_group_name
+  namespace_name      = azurerm_eventhub.hub.namespace_name
+  eventhub_name       = azurerm_eventhub.hub.name
+  resource_group_name = azurerm_eventhub.hub.resource_group_name
   user_metadata       = each.value.description
 }
