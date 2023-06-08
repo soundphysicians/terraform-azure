@@ -22,7 +22,7 @@ data "azuread_client_config" "current" {}
 # ------------------------------------------------------------------------
 resource "azurecaf_name" "storage" {
   resource_type = "azurerm_storage_account"
-  prefixes      = [var.project, var.environment]
+  prefixes      = [var.prefix, var.environment]
   suffixes      = [var.base_name]
 }
 
@@ -141,7 +141,7 @@ resource "azuread_service_principal" "app" {
 # ------------------------------------------------------------------------
 resource "azurecaf_name" "fn" {
   resource_type = "azurerm_function_app"
-  prefixes      = [var.project, var.environment]
+  prefixes      = [var.prefix, var.environment]
   suffixes      = [var.base_name]
 }
 
