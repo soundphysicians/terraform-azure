@@ -33,6 +33,6 @@ variable "db_user" {
   }
   validation {
     condition = var.db_user.username != null && var.db_user.object_id != null
-    error_message = "db_user.username and db_user.object_id must be set"
+    error_message = "Variable db_user.username and db_user.object_id must be set."
   }
 }
