@@ -22,8 +22,8 @@ variable "db_user" {
   type = object({
     username  = string,
     object_id = string,
-    roles     = optional(list(string), []),
-    master_roles = optional(list(string), [])
+    roles     = optional(list(string)),
+    master_roles = optional(list(string))
   })
   default = {
     username = null
