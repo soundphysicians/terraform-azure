@@ -47,6 +47,24 @@ run "should_set_app_db_object_id" {
     }
 }
 
+run "should_not_require_master_roles" {
+    command= plan 
+
+    variables {
+        db_user = {
+            username = var.db_user.username
+            object_id = var.db_user.object_id
+            roles = []
+        }
+    
+    }
+
+    assert {
+        condition = mssql_user.master.roles == null
+        error_message = "Master roles should be null when not provided"
+    }
+}
+
 run "should_set_master_roles_blank_by_default" {
     command= plan 
 
@@ -82,6 +100,25 @@ run "should_set_master_roles_as_provided" {
     assert {
         condition = length(mssql_user.master.roles) == 2 && contains(mssql_user.master.roles, "db_datareader") && contains(mssql_user.master.roles, "db_datawriter")
         error_message = "Master roles should be saved as provided"
+    }
+}
+
+run "should_not_require_app_roles" {
+    command= plan 
+
+    variables {
+        db_user = {
+            username = var.db_user.username
+            object_id = var.db_user.object_id
+            roles = null
+            master_roles = []
+        }
+    
+    }
+
+    assert {
+        condition = mssql_user.appDb.roles == null
+        error_message = "App roles should be null when not provided"
     }
 }
 
