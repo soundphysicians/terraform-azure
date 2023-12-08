@@ -5,8 +5,8 @@ variable "prefix" {}
 variable "environment" {
   description = "The name of the environment to deploy to"
   validation {
-    condition     = contains(["tdd", "dev", "tst", "prd", "stage"], var.environment)
-    error_message = "Valid values for var: environment are (tdd, dev, tst, prd, stage)."
+    condition     = contains(["tdd", "dev", "tst", "uat", "prd", "stage"], var.environment)
+    error_message = "Valid values for var: environment are (tdd, dev, tst, uat, prd, stage)."
   }
 
   default = "tdd"

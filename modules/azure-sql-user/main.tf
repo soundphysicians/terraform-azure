@@ -18,7 +18,7 @@ resource "mssql_user" "master" {
   database  = "master"
   username  = var.db_user.username
   object_id = var.db_user.object_id
-  roles     = []
+  roles     = var.db_user.master_roles
 }
 
 resource "mssql_user" "appDb" {

@@ -76,6 +76,8 @@ locals {
     AZURE_FUNCTIONS_ENVIRONMENT    = var.function_environment
     FUNCTIONS_WORKER_RUNTIME       = "dotnet"
   }, coalesce(var.app_settings, {}))
+
+  env_supports_slots = contains(["prd", "tst", "stage"], var.environment) ? true : false
 }
 
 # ------------------------------------------------------------------------
@@ -202,7 +204,7 @@ resource "azurerm_function_app" "app" {
 # Setup slot for function
 # ------------------------------------------------------------------------
 resource "azurerm_function_app_slot" "slot" {
-  count               = var.environment == "prd" || var.environment == "tst" ? 1 : 0
+  count               = local.env_supports_slots ? 1 : 0
   function_app_name   = azurerm_function_app.app.name
   name                = "staging"
   location            = var.location
@@ -280,7 +282,7 @@ resource "azurerm_key_vault_access_policy" "app" {
 # Grant access to the key vault for the slot function, if we have one
 # ------------------------------------------------------------------------
 resource "azurerm_key_vault_access_policy" "slot" {
-  count        = var.environment == "prd" || var.environment == "tst" ? 1 : 0
+  count        = local.env_supports_slots ? 1 : 0
   key_vault_id = data.azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_function_app_slot.slot[0].identity[0].principal_id

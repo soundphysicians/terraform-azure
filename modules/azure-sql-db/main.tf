@@ -16,6 +16,14 @@ terraform {
 # ------------------------------------------------------------------------
 data "azurerm_client_config" "current" {}
 
+locals {
+  env_supports_auditing = contains(["prd"], var.environment) ? true: false
+}
+
+provider "azurerm" {
+  features {}
+}
+
 provider "azurerm" {
   skip_provider_registration = true
   alias                      = "audit"
@@ -28,7 +36,7 @@ provider "azurerm" {
 #   Centralized storage for auditing logs
 # ------------------------------------------------------------------------
 data "azurerm_storage_account" "audit" {
-  count               = var.environment == "prd" ? 1 : 0
+  count               = local.env_supports_auditing ? 1 : 0
   provider            = azurerm.audit
   name                = var.auditing_storage_account.storage_account_name
   resource_group_name = var.auditing_storage_account.resource_group_name
@@ -88,7 +96,7 @@ resource "azurerm_mssql_server" "server" {
 # Azure SQL Server Auditing Policy - Production Only
 # ------------------------------------------------------------------------
 resource "azurerm_mssql_server_extended_auditing_policy" "server" {
-  count                                   = var.environment == "prd" ? 1 : 0
+  count                                   = local.env_supports_auditing ? 1 : 0
   server_id                               = azurerm_mssql_server.server.id
   storage_endpoint                        = data.azurerm_storage_account.audit[0].primary_blob_endpoint
   storage_account_access_key              = data.azurerm_storage_account.audit[0].primary_access_key
@@ -115,7 +123,7 @@ resource "azurerm_mssql_database" "db" {
 # Azure SQL Database Auditing Policy - Production Only
 # ------------------------------------------------------------------------
 resource "azurerm_mssql_database_extended_auditing_policy" "db" {
-  count                                   = var.environment == "prd" ? 1 : 0
+  count                                   = local.env_supports_auditing ? 1 : 0
   database_id                             = azurerm_mssql_database.db.id
   storage_endpoint                        = data.azurerm_storage_account.audit[0].primary_blob_endpoint
   storage_account_access_key              = data.azurerm_storage_account.audit[0].primary_access_key

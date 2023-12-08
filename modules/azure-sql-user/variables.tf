@@ -22,6 +22,17 @@ variable "db_user" {
   type = object({
     username  = string,
     object_id = string,
-    roles     = list(string)
+    roles     = list(string),
+    master_roles = list(string)
   })
+  default = {
+    username = null
+    object_id = null
+    roles = []
+    master_roles = []
+  }
+  validation {
+    condition = var.db_user.username != null && var.db_user.object_id != null
+    error_message = "db_user.username and db_user.object_id must be set"
+  }
 }

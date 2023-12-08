@@ -17,7 +17,7 @@ module "can_use_generated_password" {
   roles                           = ["db_datareader", "db_datawriter"]
 }
 
-output user_generated_password {
+output test__can_use_generated_password__password {
   value     = module.can_use_generated_password.password
   sensitive = true
 }
@@ -33,7 +33,7 @@ module "can_use_provided_password" {
   roles                           = ["db_datareader", "db_datawriter"]
 }
 
-output user_provided_password {
+output test__can_user_provided_password__password {
   value     = module.can_use_provided_password.password
   sensitive = true
 }

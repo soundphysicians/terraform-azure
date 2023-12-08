@@ -27,7 +27,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Name of the SQL database | `string` | n/a | yes |
-| <a name="input_db_user"></a> [db\_user](#input\_db\_user) | The user to grant access to the database | <pre>object({<br>    username  = string,<br>    object_id = string,<br>    roles     = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_db_user"></a> [db\_user](#input\_db\_user) | The user to grant access to the database | <pre>object({<br>    username  = string,<br>    object_id = string,<br>    roles     = list(string),<br>    master_roles = list(string)<br>  })</pre> | <pre>{<br>  "master_roles": [],<br>  "object_id": null,<br>  "roles": [],<br>  "username": null<br>}</pre> | no |
 | <a name="input_sql_server_admin_password"></a> [sql\_server\_admin\_password](#input\_sql\_server\_admin\_password) | Password for the sql administrator login | `string` | n/a | yes |
 | <a name="input_sql_server_admin_username"></a> [sql\_server\_admin\_username](#input\_sql\_server\_admin\_username) | Name of the sql administrator login | `string` | n/a | yes |
 | <a name="input_sql_server_fqdn"></a> [sql\_server\_fqdn](#input\_sql\_server\_fqdn) | Fully qualified domain name of the SQL Server instance to connect to | `any` | n/a | yes |

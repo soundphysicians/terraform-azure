@@ -12,6 +12,7 @@ _The Sound Way_ expects every project to have the following environments and to 
 * TDD: The testing driven development environment. Deployed on every commit, this environment can be quickly spun up and torn down to validate the build and deployment process. This can be used for basic BVT (Build Validation Testing) but should not be depended on. This environment exists only in the  _devtest_ subscription.
 * DEV: The development environment. This is the second environment in the project. This environment can be created and deployed either on commit or on demand. This is more stable than the TDD environment, but not much more. It tends to be used for manual system validation by developers. This environment exists only in the  _devtest_ subscription.
 * TST: The test environment. This is used primarily by the QA team, but also may be used for UAT (User acceptance testing) if there is no staging environment. This environment exists only in the  _devtest_ subscription.
+* UAT: The user acceptance testing environment. This is used primarily for UAT (User acceptance testing) if there is no staging environment. This environment exists only in the  _devtest_ subscription.
 * PRD: The production environment. This environment is more stable and tends to be deployed manually, either via a user clicking a release button or via checking in code into a specific branch. This environment exists only in the  _prod_ subscription. 
 
 ### Naming Conventions 
