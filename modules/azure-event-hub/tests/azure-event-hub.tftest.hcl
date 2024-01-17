@@ -1,3 +1,7 @@
+provider "azurerm" {
+  features {}
+}
+
 variables {
     namespace_name = "snd-mie-tdd-eh"
     storage_account_name = "sndmietddehsa"
