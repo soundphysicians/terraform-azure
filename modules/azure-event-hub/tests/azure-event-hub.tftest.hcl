@@ -71,3 +71,20 @@ run "should_create_consumer_groups_for_consumers" {
     }
 }
 
+run "should_output_consumer_connection_strings" {
+    command= plan 
+
+    variables {
+
+    }
+
+    assert {
+        condition = contains(keys(output.consumer_connection_strings), var.consumer_groups[0].name)
+        error_message = "Should output connection string for consumer 1"
+    }
+
+    assert {
+        condition = contains(keys(output.consumer_connection_strings), var.consumer_groups[1].name)
+        error_message = "Should output connection string for consumer 2"
+    }
+}
