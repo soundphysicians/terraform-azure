@@ -11,7 +11,7 @@ terraform {
 # Storage account container for capturing events
 # -----------------------------------------------------------------------------
 data "azurerm_storage_account" "capturestorage" {
-  name = var.storage_account_name
+  name                = var.storage_account_name
   resource_group_name = var.resource_group_name
 }
 
@@ -19,6 +19,10 @@ resource "azurerm_storage_container" "capturestorage" {
   name                  = var.name
   storage_account_name  = data.azurerm_storage_account.capturestorage.name
   container_access_type = "private" # default: private
+}
+
+locals {
+  capture_archive_name_format = coalesce(var.capture_archive_name_format, "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}")
 }
 
 # -----------------------------------------------------------------------------
@@ -38,7 +42,7 @@ resource "azurerm_eventhub" "hub" {
     skip_empty_archives = true      # default: false
     destination {
       name                = "EventHubArchive.AzureBlockBlob"
-      archive_name_format = "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+      archive_name_format = local.capture_archive_name_format
       blob_container_name = azurerm_storage_container.capturestorage.name
       storage_account_id  = data.azurerm_storage_account.capturestorage.id
     }

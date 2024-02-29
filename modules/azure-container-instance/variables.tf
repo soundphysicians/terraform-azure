@@ -91,14 +91,14 @@ variable "subnet_id" {
 
 variable "secure_environment_variables" {
   description = "Key-value collection of environment variables to be provided to the container securely"
-  type        = map
+  type        = map(any)
   default     = {}
   nullable    = false
 }
 
 variable "environment_variables" {
   description = "Key-value collection of environment variables to be provided to the container"
-  type        = map
+  type        = map(any)
   default     = {}
   nullable    = false
 }

@@ -16,8 +16,8 @@ resource "random_password" "password" {
 
 locals {
   password = (
-    var.password != null ?     
-    var.password :     
+    var.password != null ?
+    var.password :
     random_password.password[0].result
   )
 }

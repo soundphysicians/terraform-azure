@@ -28,9 +28,9 @@ variable "app_insights_key" {}
 variable "function_environment" {}
 
 # Map of application settings to send to the function app
-variable app_settings {}
+variable "app_settings" {}
 
-variable app_roles {
+variable "app_roles" {
   type = list(object({
     id : string,
     value : string,

@@ -39,3 +39,9 @@ variable "consumer_groups" {
   description = "List of event consumer groups to give access to the Event Hub"
   type        = list(object({ name = string, description = string }))
 }
+
+variable "capture_archive_name_format" {
+  description = "The naming convention for the capture blob"
+  type        = string
+  default     = "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+}

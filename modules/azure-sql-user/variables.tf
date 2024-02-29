@@ -20,19 +20,19 @@ variable "db_name" {
 variable "db_user" {
   description = "The user to grant access to the database"
   type = object({
-    username  = string,
-    object_id = string,
-    roles     = optional(list(string)),
+    username     = string,
+    object_id    = string,
+    roles        = optional(list(string)),
     master_roles = optional(list(string))
   })
   default = {
-    username = null
-    object_id = null
-    roles = []
+    username     = null
+    object_id    = null
+    roles        = []
     master_roles = []
   }
   validation {
-    condition = var.db_user.username != null && var.db_user.object_id != null
+    condition     = var.db_user.username != null && var.db_user.object_id != null
     error_message = "Variable db_user.username and db_user.object_id must be set."
   }
 }

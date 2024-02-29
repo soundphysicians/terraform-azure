@@ -35,21 +35,21 @@ variable "application_name" {
 }
 
 # Database SKU
-variable sql_perf_level {
+variable "sql_perf_level" {
   default = "S0"
 }
 
-variable administrator_login {
+variable "administrator_login" {
   type        = string
   description = "The username for the SQL sa administrator account"
   default     = "sqladmin"
 }
 
-variable sql_ad_admin_username {
+variable "sql_ad_admin_username" {
   description = "Username (email address) of the database AD administrator"
 }
 
-variable sql_ad_admin_object_id {
+variable "sql_ad_admin_object_id" {
   description = "Object ID of database AD administrator"
 
   validation {
@@ -63,7 +63,7 @@ variable sql_ad_admin_object_id {
 }
 
 # Centralized logging and auditing for production SQL environments
-variable auditing_storage_account {
+variable "auditing_storage_account" {
   description = "Storage account destination for database audit logs. Only applies in prd environment."
   nullable    = true
   type = object({
@@ -101,7 +101,7 @@ variable auditing_storage_account {
   }
 }
 
-variable firewall_rules {
+variable "firewall_rules" {
   description = "Exceptions to allow access to certain IP addresses"
   type = list(object({
     name             = string,

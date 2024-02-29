@@ -17,7 +17,7 @@ terraform {
 data "azurerm_client_config" "current" {}
 
 locals {
-  env_supports_auditing = contains(["prd"], var.environment) ? true: false
+  env_supports_auditing = contains(["prd"], var.environment) ? true : false
 }
 
 provider "azurerm" {
