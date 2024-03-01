@@ -15,8 +15,9 @@ data "azuread_client_config" "current" {}
 
 locals {
   # Lowercase values for use in resource names
-  environment = lower(var.environment)
-  prefix      = lower(var.prefix)
+  environment     = lower(var.environment)
+  prefix          = lower(var.prefix)
+  clean_base_name = replace(var.base_name, "[^a-zA-Z0-9]", "")
 
   tags = {
     environment = local.environment
@@ -31,7 +32,7 @@ locals {
   }, coalesce(var.app_settings, {}))
 
   function_name        = coalesce(var.function_name, "${local.prefix}-${local.environment}-fn-${var.base_name}")
-  storage_account_name = lower(coalesce(var.function_name, "${local.prefix}${local.environment}sa${var.base_name}"))
+  storage_account_name = lower(coalesce(var.function_name, "${local.prefix}${local.environment}sa${local.clean_base_name}"))
   plan_name            = coalesce(var.plan_name, "${local.prefix}-${local.environment}-asplan-${var.base_name}")
 }
 
