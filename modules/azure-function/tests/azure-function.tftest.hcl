@@ -129,6 +129,20 @@ run "should_create_storage_account_with_reasonable_defaults" {
   }
 }
 
+run "should_handle_special_characters_when_creating_the_storage_account" {
+  command = plan
+
+  variables {
+    base_name = "my-long-Func"
+  }
+
+  assert {
+    condition     = azurerm_storage_account.storage.name == "tsttddsamylongfunc"
+    error_message = "Should handle special characters in base name"
+  }
+}
+
+
 run "should_create_function_app_slot_with_reasonable_defaults" {
   command = plan
 

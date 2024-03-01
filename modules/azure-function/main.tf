@@ -17,7 +17,7 @@ locals {
   # Lowercase values for use in resource names
   environment     = lower(var.environment)
   prefix          = lower(var.prefix)
-  clean_base_name = replace(var.base_name, "[^a-zA-Z0-9]", "")
+  clean_base_name = replace(var.base_name, "/[^a-zA-Z0-9]/", "")
 
   tags = {
     environment = local.environment
