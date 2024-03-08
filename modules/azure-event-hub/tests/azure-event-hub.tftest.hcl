@@ -39,6 +39,32 @@ run "should_create_authorization_rule_for_producers" {
   }
 }
 
+run "should_output_producer_connection_strings" {
+  command = plan
+
+  variables {
+    producers = [
+      {
+        name = "test-producer-1"
+      },
+      {
+        name = "test-producer-2"
+      }
+    ]
+
+  }
+
+  assert {
+    condition     = contains(keys(output.producer_connection_strings), var.producers[0].name)
+    error_message = "Should output connection string for producer 1"
+  }
+
+  assert {
+    condition     = contains(keys(output.producer_connection_strings), var.producers[1].name)
+    error_message = "Should output connection string for producer 2"
+  }
+}
+
 run "should_create_authorization_rule_for_consumers" {
   command = plan
 
