@@ -146,7 +146,7 @@ resource "azurerm_linux_function_app" "app" {
 
   functions_extension_version     = "~4"
   public_network_access_enabled   = true
-  key_vault_reference_identity_id = azurerm_user_assigned_identity.app.principal_id
+  key_vault_reference_identity_id = azurerm_user_assigned_identity.app.id
 
   site_config {
     app_scale_limit = var.app_scale_limit
