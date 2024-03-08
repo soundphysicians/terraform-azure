@@ -154,8 +154,6 @@ resource "azurerm_linux_function_app" "app" {
 
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
-
-    runtime_scale_monitoring_enabled = true
   }
 
   storage_account_name       = azurerm_storage_account.storage.name
@@ -210,8 +208,6 @@ resource "azurerm_linux_function_app_slot" "slot" {
 
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
-
-    runtime_scale_monitoring_enabled = true
   }
 
   storage_account_name       = azurerm_storage_account.storage.name
