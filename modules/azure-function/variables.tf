@@ -84,6 +84,12 @@ variable "dotnet_version" {
   }
 }
 
+variable "use_dotnet_isolated_runtime" {
+  description = "Whether or not to use the .NET isolated runtime for the function app"
+  type        = bool
+  default     = false
+}
+
 variable "app_scale_limit" {
   type        = number
   description = "Maximum number of instances to scale the function app to"
@@ -125,22 +131,6 @@ variable "key_vault" {
 
 variable "deploy_using_slots" {
   description = "Whether or not to deploy the function app using deployment slots. If true, a staging slot will be created."
-  type        = bool
-  default     = false
-}
-
-variable "dotnet_version" {
-  description = "Version of the .NET runtime to use for the function app"
-  type        = string
-  default     = "v6.0"
-  validation {
-    condition     = contains(["v4.0", "v6.0", "v7.0", "v8.0"], var.dotnet_version)
-    error_message = "Dotnet version must one of the following values (v4.0, v6.0, v7.0 or v8.0)"
-  }
-}
-
-variable "use_dotnet_isolated_runtime" {
-  description = "Whether or not to use the .NET isolated runtime for the function app"
   type        = bool
   default     = false
 }

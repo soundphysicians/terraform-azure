@@ -213,6 +213,10 @@ resource "azurerm_linux_function_app_slot" "slot" {
 
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
+    application_stack {
+      dotnet_version              = var.dotnet_version
+      use_dotnet_isolated_runtime = var.use_dotnet_isolated_runtime
+    }
   }
 
   storage_account_name       = azurerm_storage_account.storage.name
