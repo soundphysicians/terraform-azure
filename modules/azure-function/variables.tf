@@ -71,16 +71,11 @@ variable "function_environment" {
 variable "dotnet_version" {
   type        = string
   description = "Version of the .NET runtime to use for the function app"
-  default     = "v6.0"
+  default     = "6.0"
 
   validation {
-    condition     = can(regex("^(v\\d+\\.\\d+)$", var.dotnet_version))
-    error_message = "Dotnet version must be in the format 'vX.X'"
-  }
-
-  validation {
-    condition     = contains(["v4.0", "v6.0", "v7.0", "v8.0"], var.dotnet_version)
-    error_message = "Dotnet version must one of the following values (v4.0, v6.0, v7.0 or v8.0)"
+    condition     = contains(["3.1", "6.0", "7.0", "8.0"], var.dotnet_version)
+    error_message = "Dotnet version must one of the following values (3.1, 6.0, 7.0, 8.0)"
   }
 }
 
