@@ -155,6 +155,8 @@ resource "azurerm_linux_function_app" "app" {
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
 
+    application_insights_key = var.app_insights_key
+
     application_stack {
       dotnet_version              = var.dotnet_version
       use_dotnet_isolated_runtime = var.use_dotnet_isolated_runtime
@@ -213,6 +215,9 @@ resource "azurerm_linux_function_app_slot" "slot" {
 
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
+
+    application_insights_key = var.app_insights_key
+
     application_stack {
       dotnet_version              = var.dotnet_version
       use_dotnet_isolated_runtime = var.use_dotnet_isolated_runtime

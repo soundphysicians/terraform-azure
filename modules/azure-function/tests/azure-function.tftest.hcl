@@ -14,6 +14,7 @@ run "should_create_function_app_with_reasonable_defaults" {
   command = plan
 
   variables {
+    app_insights_key = "1234567890"
   }
 
   assert {
@@ -79,6 +80,11 @@ run "should_create_function_app_with_reasonable_defaults" {
   assert {
     condition     = azurerm_linux_function_app.app.site_config[0].ftps_state == "Disabled"
     error_message = "Should not enable ftps by default"
+  }
+
+  assert {
+    condition     = azurerm_linux_function_app.app.site_config[0].application_insights_key == var.app_insights_key
+    error_message = "Should set appinsights key when provided"
   }
 }
 

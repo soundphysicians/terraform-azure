@@ -58,7 +58,7 @@ variable "plan_name" {
 variable "app_insights_key" {
   type        = string
   description = "Instrumentation key for the Application Insights instance to use for logging"
-  default     = ""
+  default     = null
 }
 
 # Function environment to deploy to (Development, Staging, Production)
