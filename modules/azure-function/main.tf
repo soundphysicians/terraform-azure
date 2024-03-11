@@ -29,6 +29,7 @@ locals {
     APPINSIGHTS_INSTRUMENTATIONKEY = var.app_insights_key
     AZURE_FUNCTIONS_ENVIRONMENT    = var.function_environment
     FUNCTIONS_WORKER_RUNTIME       = "dotnet"
+    AZURE_CLIENT_ID                = azurerm_user_assigned_identity.app.client_id
   }, coalesce(var.app_settings, {}))
 
   function_name        = coalesce(var.function_name, "${local.prefix}-${local.environment}-fn-${var.base_name}")
