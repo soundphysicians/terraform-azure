@@ -14,7 +14,7 @@ jobs:
       - name: Render terraform docs and push changes back to PR 
         uses: terraform-docs/gh-actions@main 
         with: 
-          working-dir: .\modules\azure-container-instance,.\modules\azure-container-registry,.\modules\azure-event-hub 
+          working-dir: .\modules 
           output-file: README.md 
           output-method: inject
           config-file: .terraform-docs.yml
