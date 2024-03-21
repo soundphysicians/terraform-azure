@@ -1,13 +1,15 @@
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 2.0 |
 
 ## Modules
 
@@ -28,6 +30,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_capture_archive_name_format"></a> [capture\_archive\_name\_format](#input\_capture\_archive\_name\_format) | The naming convention for the capture blob | `string` | `"{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"` | no |
 | <a name="input_consumer_groups"></a> [consumer\_groups](#input\_consumer\_groups) | List of event consumer groups to give access to the Event Hub | `list(object({ name = string, description = string }))` | n/a | yes |
 | <a name="input_message_retention"></a> [message\_retention](#input\_message\_retention) | The number of days to retain messages in the Event Hub | `number` | `7` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the Event Hub to create | `string` | n/a | yes |
@@ -41,8 +44,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_admin_password"></a> [admin\_password](#output\_admin\_password) | n/a |
-| <a name="output_admin_username"></a> [admin\_username](#output\_admin\_username) | n/a |
-| <a name="output_login_server"></a> [login\_server](#output\_login\_server) | n/a |
-| <a name="output_registry_name"></a> [registry\_name](#output\_registry\_name) | n/a |
+| <a name="output_consumer_connection_strings"></a> [consumer\_connection\_strings](#output\_consumer\_connection\_strings) | n/a |
+| <a name="output_producer_connection_strings"></a> [producer\_connection\_strings](#output\_producer\_connection\_strings) | n/a |
 <!-- END_TF_DOCS -->
