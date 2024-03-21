@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.0"
+      version = ">= 3.1.0"
     }
     azurecaf = {
       source  = "aztfmod/azurecaf"
@@ -111,7 +111,7 @@ resource "azurerm_mssql_database" "db" {
   name                 = var.application_name
   server_id            = azurerm_mssql_server.server.id
   sku_name             = var.sql_perf_level
-  storage_account_type = "GRS" # Default: GRS
+  storage_account_type = "Geo" # Default: Geo
 
   tags = {
     environment = var.environment
