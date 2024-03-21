@@ -17,9 +17,9 @@ jobs:
           working-dir: /
           recursive: "true"
           recursive-path: "modules"
-          output-file: README.md 
-          output-method: inject
-          config-file: .terraform-docs.yml
+          output-file: README.md # default "README.md"
+          output-method: inject # default "inject"
+          output-format: markdown table # default "markdown table"
           git-push: "true"
 
 
