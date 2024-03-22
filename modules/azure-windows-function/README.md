@@ -14,7 +14,9 @@
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_storage_account"></a> [storage\_account](#module\_storage\_account) | ../azure-storage-account | n/a |
 
 ## Resources
 
@@ -24,11 +26,10 @@ No modules.
 | [azuread_service_principal.app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [azurerm_key_vault_access_policy.app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_key_vault_access_policy.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
-| [azurerm_linux_function_app.app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) | resource |
-| [azurerm_linux_function_app_slot.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) | resource |
 | [azurerm_service_plan.plan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
-| [azurerm_storage_account.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_user_assigned_identity.app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+| [azurerm_windows_function_app.app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) | resource |
+| [azurerm_windows_function_app_slot.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app_slot) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
@@ -43,7 +44,7 @@ No modules.
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | Key value pairs of application settings to apply to the function application | `map(string)` | `{}` | no |
 | <a name="input_base_name"></a> [base\_name](#input\_base\_name) | Discriminator name for all resources | `string` | n/a | yes |
 | <a name="input_deploy_using_slots"></a> [deploy\_using\_slots](#input\_deploy\_using\_slots) | Whether or not to deploy the function app using deployment slots. If true, a staging slot will be created. | `bool` | `false` | no |
-| <a name="input_dotnet_version"></a> [dotnet\_version](#input\_dotnet\_version) | Version of the .NET runtime to use for the function app | `string` | `"6.0"` | no |
+| <a name="input_dotnet_version"></a> [dotnet\_version](#input\_dotnet\_version) | Version of the .NET runtime to use for the function app | `string` | `"v6.0"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment to deploy to | `string` | n/a | yes |
 | <a name="input_function_environment"></a> [function\_environment](#input\_function\_environment) | Prefix of the environment to deploy the function app to | `string` | `"Development"` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Name of the function app to deploy | `string` | `null` | no |
