@@ -67,5 +67,9 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_webapp_client_id"></a> [webapp\_client\_id](#output\_webapp\_client\_id) | The client ID of the Azure AD Application |
+| <a name="output_webapp_client_secret"></a> [webapp\_client\_secret](#output\_webapp\_client\_secret) | The client secret of the Azure AD Application |
+| <a name="output_webapp_managed_identity_id"></a> [webapp\_managed\_identity\_id](#output\_webapp\_managed\_identity\_id) | The ID of the User Assigned Identity |
 <!-- END_TF_DOCS -->
