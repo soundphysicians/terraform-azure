@@ -342,13 +342,13 @@ resource "azurerm_linux_web_app" "webapp" {
   # Pass any application settings through, but include the required settings
   app_settings = merge(var.app_settings, {
     "WEBSITE_RUN_FROM_PACKAGE"         = 1,
-    "AzureAd:ClientId"                 = azuread_application.webapp.client_id,
-    "AzureAd:ClientSecret"             = azuread_application_password.webapp_1.value,
+    "AzureAd__ClientId"                 = azuread_application.webapp.client_id,
+    "AzureAd__ClientSecret"             = azuread_application_password.webapp_1.value,
     "AZURE_CLIENT_ID"                  = azuread_application.webapp.client_id,
-    "KeyVault:Enabled"                 = var.key_vault == null ? "false" : "true",
-    "KeyVault:Environment"             = var.key_vault == null ? "" : var.environment,
-    "KeyVault:Name"                    = var.key_vault == null ? "" : var.key_vault.name,
-    "KeyVault:ManagedIdentityClientId" = var.key_vault == null ? "" : azurerm_user_assigned_identity.webapp.client_id,
+    "KeyVault__Enabled"                 = var.key_vault == null ? "false" : "true",
+    "KeyVault__Environment"             = var.key_vault == null ? "" : var.environment,
+    "KeyVault__Name"                    = var.key_vault == null ? "" : var.key_vault.name,
+    "KeyVault__ManagedIdentityClientId" = var.key_vault == null ? "" : azurerm_user_assigned_identity.webapp.client_id,
   })
 
   key_vault_reference_identity_id = var.key_vault == null ? null : azurerm_user_assigned_identity.webapp.id
