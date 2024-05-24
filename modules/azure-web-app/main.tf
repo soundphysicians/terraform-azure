@@ -63,7 +63,7 @@ locals {
   redirect_uris = compact([
     "${local.webapp_identifier}.azurewebsites.net/signin-oidc/",
     local.custom_domain_name == null ? "" : "${local.custom_domain_name}/signin-oidc/",
-    var.devtest_port == null ? null : "http://localhost:${var.devtest_port}"
+    var.devtest_port == null ? null : "http://localhost:${var.devtest_port}/signin-oidc/"
   ])
 
   # Set the identifier URIs for the web app

@@ -11,7 +11,7 @@ variables {
   app_name                       = null
   plan_name                      = null
   custom_domain_name             = null
-  devtest_port                   = null
+  devtest_port                   = 44399
   required_graph_access          = []
   supported_app_roles            = []
   test_automation_application_id = null
