@@ -16,11 +16,15 @@ variables {
   supported_app_roles            = []
   test_automation_application_id = null
   app_role_assignments           = []
-  key_vault                      = null
+  key_vault                      = {
+    name                = "mie-shr-kv"
+    resource_group_name = "mie-shr-rg"
+  }
   app_settings                   = {}
   connection_strings             = []
   dotnet_framework_version       = null
   health_check_path              = null
+  web_app_sku_name               = "B2"
 }
 
 run "should_create_web_app_with_reasonable_defaults" {

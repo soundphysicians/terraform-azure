@@ -351,7 +351,7 @@ resource "azurerm_linux_web_app" "webapp" {
     "KeyVault:ManagedIdentityClientId" = var.key_vault == null ? "" : azurerm_user_assigned_identity.webapp.client_id,
   })
 
-  key_vault_reference_identity_id = var.key_vault == null ? null : azurerm_user_assigned_identity.webapp.principal_id
+  key_vault_reference_identity_id = var.key_vault == null ? null : azurerm_user_assigned_identity.webapp.id
 
   # Pass any connection strings through
   dynamic "connection_string" {
