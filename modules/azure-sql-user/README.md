@@ -3,13 +3,13 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_mssql"></a> [mssql](#requirement\_mssql) | ~> 0.2.4 |
+| <a name="requirement_mssql"></a> [mssql](#requirement\_mssql) | >= 0.2.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_mssql"></a> [mssql](#provider\_mssql) | ~> 0.2.4 |
+| <a name="provider_mssql"></a> [mssql](#provider\_mssql) | >= 0.2.4 |
 
 ## Modules
 
