@@ -42,6 +42,7 @@
 | <a name="input_app_roles"></a> [app\_roles](#input\_app\_roles) | List of Application scoped roles to support | <pre>list(object({<br>    id : string,<br>    value : string,<br>    display_name : string,<br>    description : string<br>  }))</pre> | `[]` | no |
 | <a name="input_app_scale_limit"></a> [app\_scale\_limit](#input\_app\_scale\_limit) | Maximum number of instances to scale the function app to | `number` | `1` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | Key value pairs of application settings to apply to the function application | `map(string)` | `{}` | no |
+| <a name="input_application_insights_connection_string"></a> [application\_insights\_connection\_string](#input\_application\_insights\_connection\_string) | Connection string for the Application Insights instance to use for logging | `string` | `null` | no |
 | <a name="input_base_name"></a> [base\_name](#input\_base\_name) | Discriminator name for all resources | `string` | n/a | yes |
 | <a name="input_deploy_using_slots"></a> [deploy\_using\_slots](#input\_deploy\_using\_slots) | Whether or not to deploy the function app using deployment slots. If true, a staging slot will be created. | `bool` | `false` | no |
 | <a name="input_dotnet_version"></a> [dotnet\_version](#input\_dotnet\_version) | Version of the .NET runtime to use for the function app | `string` | `"6.0"` | no |
