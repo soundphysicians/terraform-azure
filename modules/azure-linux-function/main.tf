@@ -161,6 +161,7 @@ resource "azurerm_linux_function_app" "app" {
     remote_debugging_version = "VS2022"
 
     application_insights_key = var.app_insights_key
+    application_insights_connection_string = var.application_insights_connection_string
 
     application_stack {
       dotnet_version              = var.dotnet_version

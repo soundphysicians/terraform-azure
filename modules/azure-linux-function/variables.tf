@@ -61,6 +61,13 @@ variable "app_insights_key" {
   default     = null
 }
 
+# ConnectionString for AppInsights instance
+variable "application_insights_connection_string" {
+  type        = string
+  description = "Connection string for the Application Insights instance to use for logging"
+  default     = null
+}
+
 # Function environment to deploy to (Development, Staging, Production)
 variable "function_environment" {
   type        = string
