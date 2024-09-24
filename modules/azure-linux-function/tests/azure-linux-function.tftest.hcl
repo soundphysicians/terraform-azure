@@ -120,7 +120,7 @@ run "should_create_storage_account_with_reasonable_defaults" {
   }
 
   assert {
-    condition     = azurerm_storage_account.storage.name == "tsttddsamyfunc"
+    condition     = module.storage_account.name == "tsttddsamyfunc"
     error_message = "Should assign default name to storage account"
   }
 
@@ -143,7 +143,7 @@ run "should_handle_special_characters_when_creating_the_storage_account" {
   }
 
   assert {
-    condition     = azurerm_storage_account.storage.name == "tsttddsamylongfunc"
+    condition     = module.storage_account.name == "tsttddsamylongfunc"
     error_message = "Should handle special characters in base name"
   }
 }
