@@ -32,17 +32,17 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_insights_telemetry_key"></a> [app\_insights\_telemetry\_key](#input\_app\_insights\_telemetry\_key) | Application Insights Telemetry Key | `string` | n/a | yes |
-| <a name="input_container_image"></a> [container\_image](#input\_container\_image) | Container Image Name Info | <pre>object({<br>    name    = string,<br>    version = string<br>  })</pre> | n/a | yes |
-| <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | The container registry to pull images from | <pre>object({<br>    login_server = string,<br>    username     = string,<br>    password     = string<br>  })</pre> | n/a | yes |
+| <a name="input_container_image"></a> [container\_image](#input\_container\_image) | Container Image Name Info | <pre>object({<br/>    name    = string,<br/>    version = string<br/>  })</pre> | n/a | yes |
+| <a name="input_container_registry"></a> [container\_registry](#input\_container\_registry) | The container registry to pull images from | <pre>object({<br/>    login_server = string,<br/>    username     = string,<br/>    password     = string<br/>  })</pre> | n/a | yes |
 | <a name="input_database_connection_string_name"></a> [database\_connection\_string\_name](#input\_database\_connection\_string\_name) | Name of the connection string secret in the Azure Key Vault | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment into which the resources will be deployed | `string` | n/a | yes |
 | <a name="input_environment_variables"></a> [environment\_variables](#input\_environment\_variables) | Key-value collection of environment variables to be provided to the container | `map(any)` | `{}` | no |
 | <a name="input_identity"></a> [identity](#input\_identity) | The identity of the container instance | `string` | n/a | yes |
-| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Object Id of the key vault to get secrets from | <pre>object({<br>    name                = string,<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
-| <a name="input_log_analytics_workspace"></a> [log\_analytics\_workspace](#input\_log\_analytics\_workspace) | The destination Log Analytics Workspace | <pre>object({<br>    name                = string,<br>    resource_group_name = string<br>  })</pre> | n/a | yes |
+| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Object Id of the key vault to get secrets from | <pre>object({<br/>    name                = string,<br/>    resource_group_name = string<br/>  })</pre> | n/a | yes |
+| <a name="input_log_analytics_workspace"></a> [log\_analytics\_workspace](#input\_log\_analytics\_workspace) | The destination Log Analytics Workspace | <pre>object({<br/>    name                = string,<br/>    resource_group_name = string<br/>  })</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the container instance | `string` | n/a | yes |
 | <a name="input_project"></a> [project](#input\_project) | Name of the project | `string` | `"sbs"` | no |
-| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | Resource Group into which the resources will be deployed | <pre>object({<br>    name     = string,<br>    location = string<br>  })</pre> | n/a | yes |
+| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | Resource Group into which the resources will be deployed | <pre>object({<br/>    name     = string,<br/>    location = string<br/>  })</pre> | n/a | yes |
 | <a name="input_secure_environment_variables"></a> [secure\_environment\_variables](#input\_secure\_environment\_variables) | Key-value collection of environment variables to be provided to the container securely | `map(any)` | `{}` | no |
 | <a name="input_service_bus_connection_string_name"></a> [service\_bus\_connection\_string\_name](#input\_service\_bus\_connection\_string\_name) | Name of the connection string secret in the Azure Key Vault | `string` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | The subnet to associate the container instance with. Can be null to use public IP addresses | `string` | `null` | no |
