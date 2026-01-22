@@ -52,7 +52,7 @@ run "should_create_storage_account_with_reasonable_defaults" {
   }
 
   assert {
-    condition     = azurerm_storage_account.this.enable_https_traffic_only == true
+    condition     = azurerm_storage_account.this.https_traffic_only_enabled == true
     error_message = "Should require https traffic only"
   }
 

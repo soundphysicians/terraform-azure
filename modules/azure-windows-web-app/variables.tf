@@ -69,7 +69,7 @@ variable "devtest_port" {
   description = "Port number to use for local development to support authentication redirects"
   default     = null
   validation {
-    condition     = var.devtest_port == null ? true : (var.devtest_port >= 3000 && var.devtest_port < 100000)
+    condition     = var.devtest_port == null ? true : (var.devtest_port >= 3000 && var.devtest_port <= 65535)
     error_message = "Must be a valid port number for devtest_port"
   }
 }

@@ -184,9 +184,10 @@ resource "azuread_application_pre_authorized" "azure-cli" {
 resource "azuread_application_password" "webapp_1" {
   application_id    = azuread_application.webapp.id
   display_name      = "Client Secret for ${local.app_name} (1)"
-  end_date_relative = "17520h" # 2 years
+  end_date          = timeadd(timestamp(), "17520h") # 2 years
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [end_date]
   }
 }
 
@@ -388,7 +389,7 @@ resource "azurerm_windows_web_app" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      app_settings.WEBSITE_RUN_FROM_PACKAGE
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"]
     ]
   }
 
