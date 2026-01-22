@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.0"
+      version = ">= 3.0"
     }
   }
 }
@@ -40,18 +40,21 @@ locals {
 # ------------------------------------------------------------------------
 # Storage Account for Function App
 # ------------------------------------------------------------------------
-resource "azurerm_storage_account" "storage" {
-  name                     = local.storage_account_name
-  location                 = var.location
-  resource_group_name      = var.resource_group_name
-  account_kind             = "StorageV2"
-  account_tier             = "Standard"
-  account_replication_type = "RAGRS"
-  access_tier              = "Hot"
+module "storage_account" {
+  source              = "../azure-storage-account"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  name = {
+    environment   = local.environment
+    prefix        = local.prefix
+    base_name     = var.base_name
+    name_override = local.storage_account_name
+  }
+}
 
-  enable_https_traffic_only = "true"
-
-  tags = local.tags
+moved {
+  from = azurerm_storage_account.storage
+  to   = module.storage_account.azurerm_storage_account.this
 }
 
 # ------------------------------------------------------------------------
@@ -140,10 +143,11 @@ resource "azurerm_user_assigned_identity" "app" {
 # Function App
 # ------------------------------------------------------------------------
 resource "azurerm_linux_function_app" "app" {
-  name                = local.function_name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  https_only          = true
+  name                    = local.function_name
+  resource_group_name     = var.resource_group_name
+  location                = var.location
+  https_only              = true
+  builtin_logging_enabled = true
 
   functions_extension_version     = "~4"
   public_network_access_enabled   = true
@@ -157,6 +161,7 @@ resource "azurerm_linux_function_app" "app" {
     remote_debugging_version = "VS2022"
 
     application_insights_key = var.app_insights_key
+    application_insights_connection_string = var.application_insights_connection_string
 
     application_stack {
       dotnet_version              = var.dotnet_version
@@ -164,8 +169,8 @@ resource "azurerm_linux_function_app" "app" {
     }
   }
 
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  storage_account_name       = module.storage_account.name
+  storage_account_access_key = module.storage_account.primary_access_key
   service_plan_id            = azurerm_service_plan.plan.id
 
   # Pass appsettings from variable with embedded defaults
@@ -190,7 +195,6 @@ resource "azurerm_linux_function_app" "app" {
   }
 
   depends_on = [
-    azurerm_storage_account.storage,
     azurerm_service_plan.plan
   ]
 
@@ -225,8 +229,8 @@ resource "azurerm_linux_function_app_slot" "slot" {
     }
   }
 
-  storage_account_name       = azurerm_storage_account.storage.name
-  storage_account_access_key = azurerm_storage_account.storage.primary_access_key
+  storage_account_name       = module.storage_account.name
+  storage_account_access_key = module.storage_account.primary_access_key
   service_plan_id            = azurerm_service_plan.plan.id
 
   app_settings = local.app_settings
@@ -250,7 +254,6 @@ resource "azurerm_linux_function_app_slot" "slot" {
   }
 
   depends_on = [
-    azurerm_storage_account.storage,
     azurerm_service_plan.plan
   ]
 

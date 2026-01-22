@@ -4,7 +4,7 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | >= 2.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 2.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
@@ -12,7 +12,7 @@
 | Name | Version |
 |------|---------|
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | >= 2.0 |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 2.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
 
 ## Modules
@@ -29,9 +29,9 @@ No modules.
 | [azuread_application_password.webapp_1](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
 | [azuread_application_pre_authorized.azure-cli](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_pre_authorized) | resource |
 | [azuread_service_principal.webapp](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
-| [azurerm_app_service.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service) | resource |
-| [azurerm_app_service_plan.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_plan) | resource |
 | [azurerm_key_vault_access_policy.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_access_policy) | resource |
+| [azurerm_linux_web_app.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_web_app) | resource |
+| [azurerm_service_plan.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
 | [azurerm_user_assigned_identity.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [random_uuid.webapp](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
@@ -50,7 +50,7 @@ No modules.
 | <a name="input_connection_strings"></a> [connection\_strings](#input\_connection\_strings) | Collection of connection strings used by the application | <pre>list(object({<br>    name  = string<br>    type  = string<br>    value = string<br>  }))</pre> | `[]` | no |
 | <a name="input_custom_domain_name"></a> [custom\_domain\_name](#input\_custom\_domain\_name) | Root url for the production environment, if a static name is required | `string` | `null` | no |
 | <a name="input_devtest_port"></a> [devtest\_port](#input\_devtest\_port) | Port number to use for local development to support authentication redirects | `number` | `null` | no |
-| <a name="input_dotnet_framework_version"></a> [dotnet\_framework\_version](#input\_dotnet\_framework\_version) | Version of the dotnet framework to run | `string` | `"v6.0"` | no |
+| <a name="input_dotnet_framework_version"></a> [dotnet\_framework\_version](#input\_dotnet\_framework\_version) | Version of the dotnet framework to run | `string` | `"8.0"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | (Optional) The environment short name to use for the deployed resources.<br><br>  Options:<br>  - tdd<br>  - dev<br>  - tst<br>  - uat<br>  - prd<br><br>  Default: tdd | `string` | `"tdd"` | no |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | Path to the health check endpoint inside the application. ex. /health | `string` | `null` | no |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Key vault to use for secrets | <pre>object({<br>    name                = string,<br>    resource_group_name = string<br>  })</pre> | `null` | no |
@@ -63,7 +63,7 @@ No modules.
 | <a name="input_suffix"></a> [suffix](#input\_suffix) | The suffix which becomes the last segment of all resource names | `string` | n/a | yes |
 | <a name="input_supported_app_roles"></a> [supported\_app\_roles](#input\_supported\_app\_roles) | Set of roles that the application supports | <pre>list(object({<br>    id           = string<br>    description  = string<br>    display_name = string<br>    enabled      = bool<br>    value        = string<br>  }))</pre> | `[]` | no |
 | <a name="input_test_automation_application_id"></a> [test\_automation\_application\_id](#input\_test\_automation\_application\_id) | Application used for test automation | `string` | `null` | no |
-| <a name="input_web_app_plan_type"></a> [web\_app\_plan\_type](#input\_web\_app\_plan\_type) | Plan type (scale level) for the application | <pre>object({<br>    tier = string<br>    size = string<br>  })</pre> | <pre>{<br>  "size": "B1",<br>  "tier": "Basic"<br>}</pre> | no |
+| <a name="input_web_app_sku_name"></a> [web\_app\_sku\_name](#input\_web\_app\_sku\_name) | The SKU for the web app plan. Possible values include: B1, B2, B3, D1, F1, P1v2, P2v2, P3v2, P0v3, P1v3, P2v3, P3v3, P1mv3, P2mv3, P3mv3, P4mv3, P5mv3, S1, S2, S3, SHARED, WS1, WS2, and WS3 | `string` | `"B1"` | no |
 
 ## Outputs
 
