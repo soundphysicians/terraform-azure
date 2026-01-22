@@ -40,10 +40,10 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_administrator_login"></a> [administrator\_login](#input\_administrator\_login) | The username for the SQL sa administrator account | `string` | `"sqladmin"` | no |
 | <a name="input_application_name"></a> [application\_name](#input\_application\_name) | The name of your application | `string` | `""` | no |
-| <a name="input_auditing_storage_account"></a> [auditing\_storage\_account](#input\_auditing\_storage\_account) | Storage account destination for database audit logs. Only applies in prd environment. | <pre>object({<br>    subscription_id      = string,<br>    storage_account_name = string,<br>    resource_group_name  = string<br>  })</pre> | n/a | yes |
+| <a name="input_auditing_storage_account"></a> [auditing\_storage\_account](#input\_auditing\_storage\_account) | Storage account destination for database audit logs. Only applies in prd environment. | <pre>object({<br/>    subscription_id      = string,<br/>    storage_account_name = string,<br/>    resource_group_name  = string<br/>  })</pre> | n/a | yes |
 | <a name="input_base_name"></a> [base\_name](#input\_base\_name) | Base Name for All Resources Given: prefix:         sbs environment:    tst base\_name:      blah Result: sql server name:      sbs-tst-sql-blah sql database name:    sbs-tst-sqldb-blah | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The name of the environment to deploy to | `string` | `"tdd"` | no |
-| <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | Exceptions to allow access to certain IP addresses | <pre>list(object({<br>    name             = string,<br>    start_ip_address = string,<br>    end_ip_address   = string<br>  }))</pre> | `[]` | no |
+| <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | Exceptions to allow access to certain IP addresses | <pre>list(object({<br/>    name             = string,<br/>    start_ip_address = string,<br/>    end_ip_address   = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | Location Where All Resources Will Be Deployed | `any` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix Applied to  All Resource Names | `any` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource Group Where All Resources Will Be Deployed | `any` | n/a | yes |
