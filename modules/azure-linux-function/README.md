@@ -3,14 +3,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 4.0 |
 
 ## Modules
 
@@ -39,7 +39,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_insights_key"></a> [app\_insights\_key](#input\_app\_insights\_key) | Instrumentation key for the Application Insights instance to use for logging | `string` | `null` | no |
-| <a name="input_app_roles"></a> [app\_roles](#input\_app\_roles) | List of Application scoped roles to support | <pre>list(object({<br>    id : string,<br>    value : string,<br>    display_name : string,<br>    description : string<br>  }))</pre> | `[]` | no |
+| <a name="input_app_roles"></a> [app\_roles](#input\_app\_roles) | List of Application scoped roles to support | <pre>list(object({<br/>    id : string,<br/>    value : string,<br/>    display_name : string,<br/>    description : string<br/>  }))</pre> | `[]` | no |
 | <a name="input_app_scale_limit"></a> [app\_scale\_limit](#input\_app\_scale\_limit) | Maximum number of instances to scale the function app to | `number` | `1` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | Key value pairs of application settings to apply to the function application | `map(string)` | `{}` | no |
 | <a name="input_application_insights_connection_string"></a> [application\_insights\_connection\_string](#input\_application\_insights\_connection\_string) | Connection string for the Application Insights instance to use for logging | `string` | `null` | no |
@@ -49,7 +49,7 @@
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment to deploy to | `string` | n/a | yes |
 | <a name="input_function_environment"></a> [function\_environment](#input\_function\_environment) | Prefix of the environment to deploy the function app to | `string` | `"Development"` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Name of the function app to deploy | `string` | `null` | no |
-| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Object Id of the key vault to get secrets from | <pre>object({<br>    name                = string,<br>    resource_group_name = string<br>  })</pre> | `null` | no |
+| <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | Object Id of the key vault to get secrets from | <pre>object({<br/>    name                = string,<br/>    resource_group_name = string<br/>  })</pre> | `null` | no |
 | <a name="input_location"></a> [location](#input\_location) | Location to deploy resources to | `string` | n/a | yes |
 | <a name="input_plan_name"></a> [plan\_name](#input\_plan\_name) | Name of the service plan to use for the function app | `string` | `null` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix to apply to all resource names | `string` | n/a | yes |
