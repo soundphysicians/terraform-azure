@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.0"
+      version = ">= 3.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -192,7 +192,7 @@ resource "azuread_application_password" "webapp_1" {
 }
 
 #--------------------------------------------------------------
-# Web App Service Principal: Creates a service principal 
+# Web App Service Principal: Creates a service principal
 # for the web app, allowing it to access resources
 #--------------------------------------------------------------
 resource "azuread_service_principal" "webapp" {
@@ -209,7 +209,7 @@ resource "azuread_service_principal" "webapp" {
 }
 
 #--------------------------------------------------------------
-# Test Automation Account service principal 
+# Test Automation Account service principal
 #--------------------------------------------------------------
 data "azuread_service_principal" "test_automation" {
   count     = var.test_automation_application_id == null ? 0 : 1
@@ -217,7 +217,7 @@ data "azuread_service_principal" "test_automation" {
 }
 
 #--------------------------------------------------------------
-# Permissions 
+# Permissions
 #--------------------------------------------------------------
 locals {
   # Generate a list of app role assignments for the test automation application
@@ -269,22 +269,20 @@ resource "azuread_app_role_assignment" "api-role-assignments" {
 }
 
 #--------------------------------------------------------------
-# Web Application App Service Plan 
+# Web Application App Service Plan
 #--------------------------------------------------------------
-resource "azurerm_app_service_plan" "webapp" {
+resource "azurerm_service_plan" "webapp" {
   name                = local.plan_name
   location            = data.azurerm_resource_group.app.location
   resource_group_name = data.azurerm_resource_group.app.name
-  sku {
-    tier = var.web_app_plan_type.tier
-    size = var.web_app_plan_type.size
-  }
+  os_type = "Windows"
+  sku_name = var.web_app_sku_name
 
   tags = local.tags
 }
 
 #--------------------------------------------------------------
-# Managed Identity for the Web App. Used to grant access to resources 
+# Managed Identity for the Web App. Used to grant access to resources
 # such as Key Vault, Storage, etc.
 #--------------------------------------------------------------
 resource "azurerm_user_assigned_identity" "webapp" {
@@ -319,13 +317,13 @@ resource "azurerm_key_vault_access_policy" "webapp" {
 }
 
 #--------------------------------------------------------------
-# Web App App Service: Creates the web app
+# Windows Web App: Creates the web app
 #--------------------------------------------------------------
-resource "azurerm_app_service" "webapp" {
+resource "azurerm_windows_web_app" "webapp" {
   name                = azuread_application.webapp.display_name
   location            = data.azurerm_resource_group.app.location
   resource_group_name = data.azurerm_resource_group.app.name
-  app_service_plan_id = azurerm_app_service_plan.webapp.id
+  service_plan_id     = azurerm_service_plan.webapp.id
 
   # Do not disable https requirement. Required by security
   https_only = true
@@ -345,14 +343,16 @@ resource "azurerm_app_service" "webapp" {
   # Pass any application settings through, but include the required settings
   app_settings = merge(var.app_settings, {
     "WEBSITE_RUN_FROM_PACKAGE"         = 1,
-    "AzureAd:ClientId"                 = azuread_application.webapp.client_id,
-    "AzureAd:ClientSecret"             = azuread_application_password.webapp_1.value,
+    "AzureAd__ClientId"                 = azuread_application.webapp.client_id,
+    "AzureAd__ClientSecret"             = azuread_application_password.webapp_1.value,
     "AZURE_CLIENT_ID"                  = azuread_application.webapp.client_id,
-    "KeyVault:Enabled"                 = var.key_vault == null ? "false" : "true",
-    "KeyVault:Environment"             = var.key_vault == null ? "" : var.environment,
-    "KeyVault:Name"                    = var.key_vault == null ? "" : var.key_vault.name,
-    "KeyVault:ManagedIdentityClientId" = var.key_vault == null ? "" : azurerm_user_assigned_identity.webapp.client_id,
+    "KeyVault__Enabled"                 = var.key_vault == null ? "false" : "true",
+    "KeyVault__Environment"             = var.key_vault == null ? "" : var.environment,
+    "KeyVault__Name"                    = var.key_vault == null ? "" : var.key_vault.name,
+    "KeyVault__ManagedIdentityClientId" = var.key_vault == null ? "" : azurerm_user_assigned_identity.webapp.client_id,
   })
+
+  key_vault_reference_identity_id = var.key_vault == null ? null : azurerm_user_assigned_identity.webapp.id
 
   # Pass any connection strings through
   dynamic "connection_string" {
@@ -366,8 +366,8 @@ resource "azurerm_app_service" "webapp" {
   }
 
   logs {
-    failed_request_tracing_enabled  = true
-    detailed_error_messages_enabled = true
+    failed_request_tracing  = true
+    detailed_error_messages = true
     application_logs {
       file_system_level = "Information"
     }
@@ -377,18 +377,22 @@ resource "azurerm_app_service" "webapp" {
     # Do not disable http2. Required by security
     http2_enabled            = true
     managed_pipeline_mode    = "Integrated"
-    min_tls_version          = 1.2
-    dotnet_framework_version = var.dotnet_framework_version
+    minimum_tls_version          = "1.2"
     health_check_path        = var.health_check_path
     remote_debugging_enabled = var.remote_debugging_enabled
-    remote_debugging_version = "VS2019"
+    remote_debugging_version = "VS2022"
+    application_stack {
+      current_stack  = "dotnet"
+      dotnet_version = var.dotnet_framework_version
+    }
   }
 
   lifecycle {
     ignore_changes = [
-      app_settings.WEBSITE_RUN_FROM_PACKAGE
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"]
     ]
   }
 
   tags = local.tags
 }
+

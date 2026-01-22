@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 4.0"
+    }
+  }
+}
+
 locals {
   # Lowercase values for use in resource names
   environment     = lower(var.name.environment == null ? "" : var.name.environment)
