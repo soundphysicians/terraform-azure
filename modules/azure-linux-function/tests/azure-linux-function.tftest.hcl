@@ -212,3 +212,42 @@ run "should_create_function_app_slot_with_reasonable_defaults" {
     error_message = "Should not enable ftps by default"
   }
 }
+
+run "should_accept_dotnet_version_6_0" {
+  command = plan
+
+  variables {
+    dotnet_version = "6.0"
+  }
+
+  assert {
+    condition     = azurerm_linux_function_app.app.site_config[0].application_stack[0].dotnet_version == "6.0"
+    error_message = "Should accept dotnet version 6.0"
+  }
+}
+
+run "should_accept_dotnet_version_8_0" {
+  command = plan
+
+  variables {
+    dotnet_version = "8.0"
+  }
+
+  assert {
+    condition     = azurerm_linux_function_app.app.site_config[0].application_stack[0].dotnet_version == "8.0"
+    error_message = "Should accept dotnet version 8.0"
+  }
+}
+
+run "should_accept_dotnet_version_10_0" {
+  command = plan
+
+  variables {
+    dotnet_version = "10.0"
+  }
+
+  assert {
+    condition     = azurerm_linux_function_app.app.site_config[0].application_stack[0].dotnet_version == "10.0"
+    error_message = "Should accept dotnet version 10.0"
+  }
+}

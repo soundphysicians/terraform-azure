@@ -81,8 +81,8 @@ variable "dotnet_version" {
   default     = "6.0"
 
   validation {
-    condition     = contains(["3.1", "6.0", "7.0", "8.0"], var.dotnet_version)
-    error_message = "Dotnet version must one of the following values (3.1, 6.0, 7.0, 8.0)"
+    condition     = can(regex("^[0-9]+\\.[0-9]+$", var.dotnet_version))
+    error_message = "The dotnet_version must be in the format X.Y (e.g., 6.0, 8.0, 10.0)"
   }
 }
 

@@ -171,7 +171,6 @@ variable "dotnet_framework_version" {
   validation {
     condition     = can(regex("^[0-9.]*$", var.dotnet_framework_version))
     error_message = "The dotnet_framework_version must be in the format [0-9.]*"
-  
   }
 }
 

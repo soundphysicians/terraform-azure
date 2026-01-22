@@ -31,7 +31,7 @@ resource "azurerm_storage_account" "this" {
   access_tier              = "Hot"
 
   # Require HTTPS traffic only (no http traffic allowed)
-  enable_https_traffic_only = "true"
+  https_traffic_only_enabled = true
 
   # Require at least TLS 1.2
   min_tls_version = "TLS1_2"
