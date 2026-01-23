@@ -228,11 +228,9 @@ data "azuread_service_principal" "test_automation" {
 locals {
   # Generate a list of app role assignments for the test automation application
   # to access to web application
-  automation_permission_ids = [
-    for role in azuread_application.webapp.app_role : [
-      role.id
-    ] if(var.test_automation_application_id != null)
-  ]
+  automation_permission_ids = var.test_automation_application_id != null ? [
+    for role in azuread_application.webapp.app_role : role.id
+  ] : []
 
   # Generate a list of app role assignments for access to the web app
   fixed_app_permissions = distinct(flatten([
@@ -381,12 +379,13 @@ resource "azurerm_windows_web_app" "webapp" {
 
   site_config {
     # Do not disable http2. Required by security
-    http2_enabled            = true
-    managed_pipeline_mode    = "Integrated"
-    minimum_tls_version          = "1.2"
-    health_check_path        = var.health_check_path
-    remote_debugging_enabled = var.remote_debugging_enabled
-    remote_debugging_version = "VS2022"
+    http2_enabled                     = true
+    managed_pipeline_mode             = "Integrated"
+    minimum_tls_version               = "1.2"
+    health_check_path                 = var.health_check_path
+    health_check_eviction_time_in_min = var.health_check_path != null ? 10 : null
+    remote_debugging_enabled          = var.remote_debugging_enabled
+    remote_debugging_version          = "VS2022"
     application_stack {
       current_stack  = "dotnet"
       dotnet_version = var.dotnet_framework_version
