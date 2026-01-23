@@ -199,3 +199,24 @@ variable "remote_debugging_enabled" {
   nullable    = false
 }
 
+variable "service_principal_owners" {
+  description = "Set of users who have owner rights to the service principal created by the deployment."
+  type = list(object({
+    username  = string # Azure AD user name of the user (ex: user@soundphysicians.com)
+    object_id = string # Azure AD object ID of the user (guid)
+  }))
+  nullable = false
+  default  = []
+}
+
+variable "client_secret_end_date_relative" {
+  type        = string
+  description = "The relative duration for which the client secret is valid. Examples: '2y' (2 years), '5y' (5 years)"
+  default     = "2y"
+  nullable    = false
+  validation {
+    condition     = can(regex("^[0-9]+y$", var.client_secret_end_date_relative))
+    error_message = "The client_secret_end_date_relative must be in the format of years (e.g., '2y' for 2 years, '5y' for 5 years)"
+  }
+}
+

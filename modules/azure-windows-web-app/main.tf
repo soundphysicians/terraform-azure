@@ -184,7 +184,7 @@ resource "azuread_application_pre_authorized" "azure-cli" {
 resource "azuread_application_password" "webapp_1" {
   application_id    = azuread_application.webapp.id
   display_name      = "Client Secret for ${local.app_name} (1)"
-  end_date          = timeadd(timestamp(), "17520h") # 2 years
+  end_date          = timeadd(timestamp(), var.client_secret_end_date_relative)
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [end_date]
@@ -195,12 +195,18 @@ resource "azuread_application_password" "webapp_1" {
 # Web App Service Principal: Creates a service principal
 # for the web app, allowing it to access resources
 #--------------------------------------------------------------
+locals {
+  default_owner    = [data.azuread_client_config.current.object_id]
+  other_owners     = [for owner in var.service_principal_owners : owner.object_id]
+  principal_owners = flatten([local.default_owner, local.other_owners])
+}
+
 resource "azuread_service_principal" "webapp" {
   client_id                    = azuread_application.webapp.client_id
   app_role_assignment_required = false
   alternative_names            = []
   notification_email_addresses = []
-  owners                       = [data.azuread_client_config.current.object_id]
+  owners                       = local.principal_owners
   tags                         = values(local.tags)
 
   lifecycle {
