@@ -238,7 +238,7 @@ locals {
       for role in user.role_ids : {
         application_object_id = user.application_object_id
         role_id               = role
-        unique_key            = format("%s-%s", user.application_object_id, role)
+        unique_key            = format("%s--%s", user.application_object_id, role)
       }
     ] if length(user.role_ids) > 0
   ]))
