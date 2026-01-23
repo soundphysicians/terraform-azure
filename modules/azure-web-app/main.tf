@@ -187,7 +187,7 @@ resource "azuread_application_password" "webapp_1" {
   end_date          = timeadd(timestamp(), "17520h") # 2 years
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [end_date]
+    ignore_changes        = [end_date, end_date_relative]
   }
 }
 
