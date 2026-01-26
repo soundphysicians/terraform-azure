@@ -92,6 +92,17 @@ variable "use_dotnet_isolated_runtime" {
   default     = false
 }
 
+variable "sku_name" {
+  type        = string
+  description = "SKU name for the function app"
+  default     = "Y1"
+
+  validation {
+    condition = can(regex("^(Y1|FC1)$", var.sku_name))
+    error_message = "The SKU name for the function app must be Y1 or FC1"
+  }
+}
+
 variable "app_scale_limit" {
   type        = number
   description = "Maximum number of instances to scale the function app to"

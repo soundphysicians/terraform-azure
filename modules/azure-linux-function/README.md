@@ -3,13 +3,14 @@
 
 | Name | Version |
 |------|---------|
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | >= 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | >= 2.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 4.0 |
 
 ## Modules
@@ -55,6 +56,7 @@
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix to apply to all resource names | `string` | n/a | yes |
 | <a name="input_remote_debugging_enabled"></a> [remote\_debugging\_enabled](#input\_remote\_debugging\_enabled) | Whether or not to enable remote debugging for the function app | `bool` | `false` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group to place resources in | `string` | n/a | yes |
+| <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | SKU name for the function app | `string` | `"Y1"` | no |
 | <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | Name of the storage account to use for the function app | `string` | `null` | no |
 | <a name="input_use_dotnet_isolated_runtime"></a> [use\_dotnet\_isolated\_runtime](#input\_use\_dotnet\_isolated\_runtime) | Whether or not to use the .NET isolated runtime for the function app | `bool` | `false` | no |
 
