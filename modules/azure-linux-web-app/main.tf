@@ -377,7 +377,7 @@ resource "azurerm_linux_web_app" "webapp" {
     # Do not disable http2. Required by security
     http2_enabled            = true
     managed_pipeline_mode    = "Integrated"
-    minimum_tls_version          = 1.2
+    minimum_tls_version      = "1.2"
     health_check_path        = var.health_check_path
     remote_debugging_enabled = var.remote_debugging_enabled
     remote_debugging_version = "VS2022"
@@ -385,7 +385,7 @@ resource "azurerm_linux_web_app" "webapp" {
       dotnet_version = var.dotnet_framework_version
     }
   }
-
+  
   lifecycle {
     ignore_changes = [
       app_settings.WEBSITE_RUN_FROM_PACKAGE

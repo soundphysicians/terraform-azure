@@ -98,7 +98,7 @@ variable "sku_name" {
   default     = "Y1"
 
   validation {
-    condition = can(regex("^Y1|FC1$", var.sku_name))
+    condition = can(regex("^(Y1|FC1)$", var.sku_name))
     error_message = "The SKU name for the function app must be Y1 or FC1"
   }
 }
