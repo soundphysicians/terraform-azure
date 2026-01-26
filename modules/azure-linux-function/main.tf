@@ -61,6 +61,12 @@ moved {
   to   = module.storage_account.azurerm_storage_account.this
 }
 
+resource "null_resource" "sku_trigger" {
+  triggers = {
+    sku_name = var.sku_name
+  }
+}
+
 # ------------------------------------------------------------------------
 # Service Plan
 # ------------------------------------------------------------------------
@@ -72,6 +78,11 @@ resource "azurerm_service_plan" "plan" {
   sku_name            = var.sku_name
 
   tags = local.tags
+
+  lifecycle {
+    create_before_destroy = true
+    replace_triggered_by  = [null_resource.sku_trigger]
+  }
 }
 
 # ------------------------------------------------------------------------
