@@ -80,7 +80,7 @@ resource "azurerm_service_plan" "plan" {
   tags = local.tags
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
     replace_triggered_by  = [null_resource.sku_trigger]
   }
 }
