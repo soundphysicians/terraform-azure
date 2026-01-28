@@ -31,7 +31,6 @@ locals {
   # Pass appsettings from variable with embedded defaults
   base_app_settings = {
     AZURE_FUNCTIONS_ENVIRONMENT      = var.function_environment
-    FUNCTIONS_WORKER_RUNTIME         = var.runtime_name
     AZURE_CLIENT_ID                  = azurerm_user_assigned_identity.app.client_id
     AzureWebJobsStorage__accountName = module.storage_account.name
   }
