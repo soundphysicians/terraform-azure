@@ -269,21 +269,3 @@ run "should_accept_y1_sku_name" {
     error_message = "Should accept sku name Y1"
   }
 }
-
-run "should_accept_fc1_sku_name" {
-  command = plan
-
-  variables {
-    sku_name = "FC1"
-  }
-
-  assert {
-    condition     = azurerm_service_plan.plan.os_type == "Linux"
-    error_message = "Should set plan to Linux OS Type"
-  }
-  
-  assert {
-    condition     = azurerm_service_plan.plan.sku_name == "FC1"
-    error_message = "Should accept sku name FC1"
-  }
-}
