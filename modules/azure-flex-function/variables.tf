@@ -1,4 +1,4 @@
-# Prefix Applied to  All Resource Names
+# Prefix Applied to All Resource Names
 variable "prefix" {
   type        = string
   description = "Prefix to apply to all resource names"
@@ -22,15 +22,7 @@ variable "resource_group_name" {
   description = "Name of the resource group to place resources in"
 }
 
-# Base Name for All Resources 
-# Given: 
-#   prefix:         sbs
-#   environment:    tst
-#   base_name:      myfunc
-# Result:
-#   function name:      sbs-tst-fn-myfunc
-#   storage account:    sbststsamyfunc
-#   service plan:       sbs-tst-asplan-myfunc
+# Base Name for All Resources
 variable "base_name" {
   type        = string
   description = "Discriminator name for all resources"
@@ -75,44 +67,57 @@ variable "function_environment" {
   default     = "Development"
 }
 
-variable "dotnet_version" {
+# Runtime configuration
+variable "runtime_name" {
   type        = string
-  description = "Version of the .NET runtime to use for the function app"
-  default     = "6.0"
+  description = "The name of the language worker runtime (dotnet-isolated, node, python, java, powershell)"
+  default     = "dotnet-isolated"
 
   validation {
-    condition     = can(regex("^[0-9]+\\.[0-9]+$", var.dotnet_version))
-    error_message = "The dotnet_version must be in the format X.Y (e.g., 6.0, 8.0, 10.0)"
+    condition     = can(regex("^(dotnet-isolated|node|python|java|powershell)$", var.runtime_name))
+    error_message = "The runtime_name must be one of: dotnet-isolated, node, python, java, powershell"
   }
 }
 
-variable "use_dotnet_isolated_runtime" {
-  description = "Whether or not to use the .NET isolated runtime for the function app"
-  type        = bool
-  default     = false
-}
-
-variable "sku_name" {
+variable "runtime_version" {
   type        = string
-  description = "SKU name for the function app (Consumption plan only)"
-  default     = "Y1"
-
-  validation {
-    condition = var.sku_name == "Y1"
-    error_message = "The SKU name for the function app must be Y1. For FlexConsumption (FC1), use the azure-flex-function module instead."
-  }
+  description = "The version of the language worker runtime"
+  default     = "8.0"
 }
 
-variable "app_scale_limit" {
+# Scaling configuration
+variable "maximum_instance_count" {
   type        = number
-  description = "Maximum number of instances to scale the function app to"
-  default     = 1
+  description = "The maximum number of instances to scale the function app to"
+  default     = 100
+
+  validation {
+    condition     = var.maximum_instance_count >= 40 && var.maximum_instance_count <= 1000
+    error_message = "The maximum_instance_count must be between 40 and 1000"
+  }
 }
 
-variable "remote_debugging_enabled" {
-  type        = bool
-  description = "Whether or not to enable remote debugging for the function app"
-  default     = false
+variable "instance_memory_in_mb" {
+  type        = number
+  description = "The memory size of instances used by the app (2048 or 4096)"
+  default     = 2048
+
+  validation {
+    condition     = contains([2048, 4096], var.instance_memory_in_mb)
+    error_message = "The instance_memory_in_mb must be either 2048 or 4096"
+  }
+}
+
+# Storage authentication
+variable "storage_authentication_type" {
+  type        = string
+  description = "The type of authentication to use for the storage account (StorageAccountConnectionString, SystemAssignedIdentity, or UserAssignedIdentity)"
+  default     = "StorageAccountConnectionString"
+
+  validation {
+    condition     = can(regex("^(StorageAccountConnectionString|SystemAssignedIdentity|UserAssignedIdentity)$", var.storage_authentication_type))
+    error_message = "The storage_authentication_type must be one of: StorageAccountConnectionString, SystemAssignedIdentity, UserAssignedIdentity"
+  }
 }
 
 # Map of application settings to send to the function app
@@ -134,7 +139,7 @@ variable "app_roles" {
 }
 
 variable "key_vault" {
-  description = "Object Id of the key vault to get secrets from"
+  description = "Key vault to get secrets from"
   type = object({
     name                = string,
     resource_group_name = string
@@ -147,3 +152,10 @@ variable "deploy_using_slots" {
   type        = bool
   default     = false
 }
+
+variable "remote_debugging_enabled" {
+  type        = bool
+  description = "Whether or not to enable remote debugging for the function app"
+  default     = false
+}
+
