@@ -237,4 +237,6 @@ The module will create resources with these names:
 | <a name="output_service_principal_object_id"></a> [service\_principal\_object\_id](#output\_service\_principal\_object\_id) | The object ID of the service principal |
 | <a name="output_storage_account_id"></a> [storage\_account\_id](#output\_storage\_account\_id) | The ID of the storage account used by the Function App |
 | <a name="output_storage_account_name"></a> [storage\_account\_name](#output\_storage\_account\_name) | The name of the storage account used by the Function App |
+| <a name="output_system_assigned_principal_id"></a> [system\_assigned\_principal\_id](#output\_system\_assigned\_principal\_id) | System-assigned managed identity principal ID for the Function App. Null when app identity type is UserAssigned only. |
+| <a name="output_system_assigned_tenant_id"></a> [system\_assigned\_tenant\_id](#output\_system\_assigned\_tenant\_id) | Tenant ID of the Function App system-assigned managed identity. Null when app identity type is UserAssigned only. |
 <!-- END_TF_DOCS -->
