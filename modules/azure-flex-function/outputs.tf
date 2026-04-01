@@ -62,3 +62,19 @@ output "service_principal_object_id" {
   value       = azuread_service_principal.app.object_id
   description = "The object ID of the service principal"
 }
+
+output "system_assigned_principal_id" {
+  description = "System-assigned managed identity principal ID for the Function App. Null when app identity type is UserAssigned only."
+  value = try(
+    azurerm_function_app_flex_consumption.app.identity[0].principal_id,
+    null
+  )
+}
+
+output "system_assigned_tenant_id" {
+  description = "Tenant ID of the Function App system-assigned managed identity. Null when app identity type is UserAssigned only."
+  value = try(
+    azurerm_function_app_flex_consumption.app.identity[0].tenant_id,
+    null
+  )
+}
