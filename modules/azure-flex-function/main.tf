@@ -8,8 +8,14 @@ terraform {
       source  = "hashicorp/azuread"
       version = ">= 2.0"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = ">= 2.0"
+    }
   }
 }
+
+provider "azapi" {}
 
 # ------------------------------------------------------------------------
 # Stores the current connection information (Resource Manager and AD)
@@ -45,8 +51,6 @@ locals {
   # Only enable SystemAssigned identity when Keyvault is present 
   has_key_vault = var.key_vault != null 
   function_identity_type = local.has_key_vault ? "SystemAssigned, UserAssigned" : "UserAssigned"
-  # If Key Vault is enabled, grant KV access to system identity (default KV reference identity on Flex)
-  key_vault_object_id = local.has_key_vault ? azurerm_function_app_flex_consumption.app.identity[0].principal_id : azurerm_user_assigned_identity.app.principal_id
 }
 
 # ------------------------------------------------------------------------
@@ -210,6 +214,26 @@ resource "azurerm_function_app_flex_consumption" "app" {
 }
 
 # ------------------------------------------------------------------------
+# The SystemAssigned identity object_id is not known until applied
+# This allows us to read the identity's principal ID after apply 
+# which is used to grant that identity access to the key vault 
+# in azurerm_key_vault_access_policy.app. Direct usage of the 
+# principalId without this step leads to an empty string result, 
+# causing a failure during plan steps. 
+# NOTE: Once flex consumption apps support UserAssigned identity 
+# access to keyVault references, we can use that rather than 
+# SystemAssigned identities for key vault access in environment variables
+# ------------------------------------------------------------------------
+data "azapi_resource" "function_site" {
+  type        = "Microsoft.Web/sites@2023-12-01"
+  resource_id = azurerm_function_app_flex_consumption.app.id
+
+  response_export_values = ["identity.principalId"]
+
+  depends_on = [azurerm_function_app_flex_consumption.app]
+}
+
+# ------------------------------------------------------------------------
 # Setup slot for function
 # Note: FlexConsumption does not currently support deployment slots
 # This is a placeholder for future support
@@ -237,7 +261,7 @@ resource "azurerm_key_vault_access_policy" "app" {
   count        = var.key_vault != null ? 1 : 0
   key_vault_id = data.azurerm_key_vault.key_vault[0].id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = local.key_vault_object_id
+  object_id    = data.azapi_resource.function_site.output.identity.principalId
 
   secret_permissions = [
     "Get",
