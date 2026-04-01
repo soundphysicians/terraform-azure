@@ -41,6 +41,12 @@ locals {
   storage_account_name   = lower(coalesce(var.storage_account_name, "${local.prefix}${local.environment}sa${local.clean_base_name}"))
   plan_name              = coalesce(var.plan_name, "${local.prefix}-${local.environment}-fcplan-${var.base_name}")
   deployment_container   = "deployments"
+
+  # Only enable SystemAssigned identity when Keyvault is present 
+  has_key_vault = var.key_vault != null 
+  function_identity_type = local.has_key_vault ? "SystemAssigned, UserAssigned" : "UserAssigned"
+  # If Key Vault is enabled, grant KV access to system identity (default KV reference identity on Flex)
+  key_vault_object_id = local.has_key_vault ? azurerm_function_app_flex_consumption.app.identity[0].principal_id : azurerm_user_assigned_identity.app.principal_id
 }
 
 # ------------------------------------------------------------------------
@@ -182,7 +188,7 @@ resource "azurerm_function_app_flex_consumption" "app" {
   app_settings = local.app_settings
 
   identity {
-    type         = "UserAssigned"
+    type         = local.function_identity_type
     identity_ids = [azurerm_user_assigned_identity.app.id]
   }
 
@@ -231,7 +237,7 @@ resource "azurerm_key_vault_access_policy" "app" {
   count        = var.key_vault != null ? 1 : 0
   key_vault_id = data.azurerm_key_vault.key_vault[0].id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_user_assigned_identity.app.principal_id
+  object_id    = local.key_vault_object_id
 
   secret_permissions = [
     "Get",
