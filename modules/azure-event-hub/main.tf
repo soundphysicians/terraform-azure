@@ -25,13 +25,17 @@ locals {
   capture_archive_name_format = coalesce(var.capture_archive_name_format, "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}")
 }
 
+data "azurerm_eventhub_namespace" "namespace" {
+  name = var.namespace_name 
+  resource_group_name = var.resource_group_name
+}
+
 # -----------------------------------------------------------------------------
 # Event hub for publishing of events
 # -----------------------------------------------------------------------------
 resource "azurerm_eventhub" "hub" {
   name                = var.name
-  namespace_name      = var.namespace_name
-  resource_group_name = var.resource_group_name
+  namespace_id        = data.azurerm_eventhub_namespace.namespace.id
   partition_count     = var.partition_count   # default: 4
   message_retention   = var.message_retention # default: 1
   capture_description {
