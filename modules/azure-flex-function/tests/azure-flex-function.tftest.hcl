@@ -404,3 +404,29 @@ run "should_not_create_deployment_slot" {
     error_message = "Should accept deploy_using_slots variable for future compatibility"
   }
 }
+
+run "should_create_key_vault_access_policy" {
+  command = plan
+
+  variables {
+    key_vault = {
+      name = "mie-shr-kv"
+      resource_group_name = "mie-shr-rg"
+    }
+  }
+
+  assert {
+    condition     = length(azurerm_key_vault_access_policy.app) == 1
+    error_message = "Should create key vault access policy"
+  }
+
+  assert {
+    condition     = length(azurerm_key_vault_access_policy.app[0].key_vault_id) > 1 
+    error_message = "Should set key_vault_id"
+  }
+
+  assert {
+    condition     = length(azurerm_key_vault_access_policy.app[0].tenant_id) > 1 
+    error_message = "Should set tenant_id"
+  }
+}
