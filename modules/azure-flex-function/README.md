@@ -162,6 +162,7 @@ The module will create resources with these names:
 
 | Name | Version |
 |------|---------|
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | >= 2.0 |
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | >= 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 4.0 |
 
@@ -169,6 +170,7 @@ The module will create resources with these names:
 
 | Name | Version |
 |------|---------|
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | >= 2.0 |
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | >= 2.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 4.0 |
 
@@ -190,6 +192,7 @@ The module will create resources with these names:
 | [azurerm_service_plan.plan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
 | [azurerm_storage_container.deployment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_user_assigned_identity.app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+| [azapi_resource.function_site](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/resource) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_key_vault.key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/key_vault) | data source |
