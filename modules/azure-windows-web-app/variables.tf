@@ -220,3 +220,16 @@ variable "client_secret_end_date_relative" {
   }
 }
 
+variable "client_secret_rotation_days" {
+  type        = number
+  description = "The number of days after which the client secret will be rotated. Set to null to disable automatic rotation."
+  default     = null
+  nullable    = true
+  validation {
+    condition = var.client_secret_rotation_days == null ? true : (
+      var.client_secret_rotation_days > 0 &&
+      floor(var.client_secret_rotation_days) == var.client_secret_rotation_days
+    )
+    error_message = "The client_secret_rotation_days must be null or a positive whole number."
+  }
+}

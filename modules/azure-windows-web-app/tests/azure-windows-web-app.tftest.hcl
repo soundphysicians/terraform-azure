@@ -54,6 +54,29 @@ run "should_create_web_app_with_reasonable_defaults" {
     condition     = azurerm_service_plan.webapp.os_type == "Windows"
     error_message = "Should create Windows service plan"
   }
+
+  assert {
+    condition     = length(time_rotating.webapp_secret) == 0
+    error_message = "Should disable automatic client secret rotation by default"
+  }
+}
+
+run "should_enable_client_secret_rotation_when_configured" {
+  command = plan
+
+  variables {
+    client_secret_rotation_days = 540
+  }
+
+  assert {
+    condition     = length(time_rotating.webapp_secret) == 1
+    error_message = "Should enable automatic client secret rotation when configured"
+  }
+
+  assert {
+    condition     = time_rotating.webapp_secret[0].rotation_days == 540
+    error_message = "Should use the configured client secret rotation interval"
+  }
 }
 
 run "should_create_app_roles_when_provided" {
