@@ -79,6 +79,32 @@ run "should_enable_client_secret_rotation_when_configured" {
   }
 }
 
+run "should_reject_rotation_period_equal_to_secret_lifetime" {
+  command = plan
+
+  variables {
+    client_secret_end_date_relative = "720h"
+    client_secret_rotation_days     = 30
+  }
+
+  expect_failures = [
+    time_rotating.webapp_secret,
+  ]
+}
+
+run "should_reject_rotation_period_greater_than_secret_lifetime" {
+  command = plan
+
+  variables {
+    client_secret_end_date_relative = "720h"
+    client_secret_rotation_days     = 31
+  }
+
+  expect_failures = [
+    time_rotating.webapp_secret,
+  ]
+}
+
 run "should_create_app_roles_when_provided" {
   command = plan
 
