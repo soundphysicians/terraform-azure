@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.12"
+    }
   }
 }
 
@@ -28,6 +32,23 @@ data "azurerm_resource_group" "app" {
 resource "random_uuid" "webapp" {
   keepers = {
     app_name = local.app_name
+  }
+}
+
+resource "time_rotating" "webapp_secret" {
+  count = var.client_secret_rotation_days == null ? 0 : 1
+
+  rotation_days = var.client_secret_rotation_days
+
+  lifecycle {
+    precondition {
+      condition = try(
+        tonumber(formatdate("YYYYMMDDhhmmss", timeadd("2000-01-01T00:00:00Z", "${var.client_secret_rotation_days * 24}h"))) <
+        tonumber(formatdate("YYYYMMDDhhmmss", timeadd("2000-01-01T00:00:00Z", var.client_secret_end_date_relative))),
+        false
+      )
+      error_message = "The client_secret_rotation_days period must be shorter than client_secret_end_date_relative."
+    }
   }
 }
 
@@ -185,6 +206,9 @@ resource "azuread_application_password" "webapp_1" {
   application_id    = azuread_application.webapp.id
   display_name      = "Client Secret for ${local.app_name} (1)"
   end_date          = timeadd(timestamp(), var.client_secret_end_date_relative)
+  rotate_when_changed = var.client_secret_rotation_days == null ? null : {
+    rotation = time_rotating.webapp_secret[0].id
+  }
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [end_date, end_date_relative]

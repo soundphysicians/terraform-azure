@@ -54,6 +54,7 @@ module "windows_web_app" {
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | >= 2.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.12 |
 
 ## Providers
 
@@ -62,6 +63,7 @@ module "windows_web_app" {
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | >= 2.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
+| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.12 |
 
 ## Modules
 
@@ -82,6 +84,7 @@ No modules.
 | [azurerm_user_assigned_identity.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [azurerm_windows_web_app.webapp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_web_app) | resource |
 | [random_uuid.webapp](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
+| [time_rotating.webapp_secret](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/rotating) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_service_principal.test_automation](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -95,7 +98,8 @@ No modules.
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | The name of the web app. Overrides the default naming convention | `string` | `null` | no |
 | <a name="input_app_role_assignments"></a> [app\_role\_assignments](#input\_app\_role\_assignments) | Set of fixed users and roles for the application | <pre>list(object({<br/>    application_object_id = string,      # Azure AD Client ID for the client application <br/>    role_ids              = list(string) # list of roles that the application has access to<br/>  }))</pre> | `[]` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | Key value pairs of settings to pass as application settings | `map(string)` | `{}` | no |
-| <a name="input_client_secret_end_date_relative"></a> [client\_secret\_end\_date\_relative](#input\_client\_secret\_end\_date\_relative) | The relative duration for which the client secret is valid. Examples: '2y' (2 years), '5y' (5 years) | `string` | `"2y"` | no |
+| <a name="input_client_secret_end_date_relative"></a> [client\_secret\_end\_date\_relative](#input\_client\_secret\_end\_date\_relative) | The positive Terraform duration for which the client secret is valid. Example: '17520h' (730 days) | `string` | `"17520h"` | no |
+| <a name="input_client_secret_rotation_days"></a> [client\_secret\_rotation\_days](#input\_client\_secret\_rotation\_days) | The number of days after which the client secret will be rotated. Set to null to disable automatic rotation. | `number` | `null` | no |
 | <a name="input_connection_strings"></a> [connection\_strings](#input\_connection\_strings) | Collection of connection strings used by the application | <pre>list(object({<br/>    name  = string<br/>    type  = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_custom_domain_name"></a> [custom\_domain\_name](#input\_custom\_domain\_name) | Root url for the production environment, if a static name is required | `string` | `null` | no |
 | <a name="input_devtest_port"></a> [devtest\_port](#input\_devtest\_port) | Port number to use for local development to support authentication redirects | `number` | `null` | no |
