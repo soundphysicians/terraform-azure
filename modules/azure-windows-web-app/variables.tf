@@ -211,12 +211,16 @@ variable "service_principal_owners" {
 
 variable "client_secret_end_date_relative" {
   type        = string
-  description = "The relative duration for which the client secret is valid. Examples: '2y' (2 years), '5y' (5 years)"
-  default     = "2y"
+  description = "The positive Terraform duration for which the client secret is valid. Example: '17520h' (730 days)"
+  default     = "17520h" # 730 days (2 years)
   nullable    = false
   validation {
-    condition     = can(regex("^[0-9]+y$", var.client_secret_end_date_relative))
-    error_message = "The client_secret_end_date_relative must be in the format of years (e.g., '2y' for 2 years, '5y' for 5 years)"
+    condition = try(
+      timeadd("2000-01-01T00:00:00Z", var.client_secret_end_date_relative) != "2000-01-01T00:00:00Z" &&
+      substr(var.client_secret_end_date_relative, 0, 1) != "-",
+      false
+    )
+    error_message = "The client_secret_end_date_relative must be a positive Terraform duration using units such as 'h', 'm', or 's' (e.g., '17520h' for 730 days)."
   }
 }
 
