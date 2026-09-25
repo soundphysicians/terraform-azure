@@ -19,10 +19,16 @@ locals {
   prefix          = lower(var.prefix)
   clean_base_name = replace(var.base_name, "/[^a-zA-Z0-9]/", "")
 
-  tags = {
+  base_tags = {
     environment = local.environment
     project     = local.prefix
   }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
+  azuread_tags             = [for v in values(local.tags) : v if lower(v) != "hideapp"]
 
   # Pass appsettings from variable with embedded defaults
   app_settings = merge({
@@ -44,6 +50,7 @@ module "storage_account" {
   source              = "../azure-storage-account"
   resource_group_name = var.resource_group_name
   location            = var.location
+  tags                = local.tags
   name = {
     environment   = local.environment
     prefix        = local.prefix
@@ -80,7 +87,7 @@ resource "azuread_application" "app" {
   sign_in_audience               = "AzureADMyOrg"
   prevent_duplicate_names        = false # prevent lookups that we may not have rights to make
   fallback_public_client_enabled = false
-  tags                           = values(local.tags)
+  tags                           = local.azuread_tags
 
   api {
     mapped_claims_enabled          = true
@@ -119,7 +126,7 @@ resource "azuread_service_principal" "app" {
   alternative_names            = []
   notification_email_addresses = []
   owners                       = [data.azuread_client_config.current.object_id]
-  tags                         = values(local.tags)
+  tags                         = local.azuread_tags
 
   lifecycle {
     ignore_changes = [

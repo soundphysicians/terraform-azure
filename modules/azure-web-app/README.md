@@ -62,6 +62,7 @@ No modules.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group to place resources in | `string` | n/a | yes |
 | <a name="input_suffix"></a> [suffix](#input\_suffix) | The suffix which becomes the last segment of all resource names | `string` | n/a | yes |
 | <a name="input_supported_app_roles"></a> [supported\_app\_roles](#input\_supported\_app\_roles) | Set of roles that the application supports | <pre>list(object({<br/>    id           = string<br/>    description  = string<br/>    display_name = string<br/>    enabled      = bool<br/>    value        = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 | <a name="input_test_automation_application_id"></a> [test\_automation\_application\_id](#input\_test\_automation\_application\_id) | Application used for test automation | `string` | `null` | no |
 | <a name="input_web_app_plan_type"></a> [web\_app\_plan\_type](#input\_web\_app\_plan\_type) | Plan type (scale level) for the application | <pre>object({<br/>    tier = string<br/>    size = string<br/>  })</pre> | <pre>{<br/>  "size": "B1",<br/>  "tier": "Basic"<br/>}</pre> | no |
 

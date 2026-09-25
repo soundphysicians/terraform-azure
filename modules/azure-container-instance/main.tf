@@ -25,10 +25,7 @@ resource "azurerm_user_assigned_identity" "container" {
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
 
-  tags = {
-    environment = var.environment,
-    project     = var.project
-  }
+  tags = local.tags
 }
 
 # ------------------------------------------------------------------------
@@ -54,6 +51,16 @@ data "azurerm_log_analytics_workspace" "this" {
 }
 
 locals {
+  base_tags = {
+    environment = var.environment
+    project     = var.project
+  }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
+
   network_profile_name = "${var.name}-netprofile"
   nic_name             = "${var.name}-nic"
   ipconfig_name        = "${var.name}-ipconfig"
@@ -76,6 +83,8 @@ resource "azurerm_network_profile" "network_profile" {
       subnet_id = var.subnet_id
     }
   }
+
+  tags = local.tags
 }
 
 locals {
@@ -139,8 +148,5 @@ resource "azurerm_container_group" "container" {
     }
   }
 
-  tags = {
-    environment = var.environment,
-    project     = var.project
-  }
+  tags = local.tags
 }

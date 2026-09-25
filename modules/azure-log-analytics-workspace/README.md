@@ -31,6 +31,7 @@ No modules.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group | `string` | n/a | yes |
 | <a name="input_retention_in_days"></a> [retention\_in\_days](#input\_retention\_in\_days) | The retention period for the Log Analytics Workspace | `number` | `30` | no |
 | <a name="input_sku"></a> [sku](#input\_sku) | The SKU of the Log Analytics Workspace | `string` | `"PerGB2018"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 | <a name="input_workspace_name"></a> [workspace\_name](#input\_workspace\_name) | The name of the Log Analytics Workspace | `string` | n/a | yes |
 
 ## Outputs

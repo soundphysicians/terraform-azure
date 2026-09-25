@@ -32,10 +32,16 @@ resource "random_uuid" "webapp" {
 }
 
 locals {
-  tags = {
+  base_tags = {
     project     = var.project
     environment = var.environment
   }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
+  azuread_tags             = [for v in values(local.tags) : v if lower(v) != "hideapp"]
 
   # Role Definitions
   role_user_impersonation = {
@@ -166,7 +172,7 @@ resource "azuread_application" "webapp" {
     }
   }
 
-  tags = values(local.tags)
+  tags = local.azuread_tags
 }
 
 #--------------------------------------------------------------
@@ -182,9 +188,9 @@ resource "azuread_application_pre_authorized" "azure-cli" {
 # Web App Registration Password: Creates a client secret for the web app
 #--------------------------------------------------------------
 resource "azuread_application_password" "webapp_1" {
-  application_id    = azuread_application.webapp.id
-  display_name      = "Client Secret for ${local.app_name} (1)"
-  end_date          = timeadd(timestamp(), "17520h") # 2 years
+  application_id = azuread_application.webapp.id
+  display_name   = "Client Secret for ${local.app_name} (1)"
+  end_date       = timeadd(timestamp(), "17520h") # 2 years
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [end_date, end_date_relative]
@@ -201,7 +207,7 @@ resource "azuread_service_principal" "webapp" {
   alternative_names            = []
   notification_email_addresses = []
   owners                       = [data.azuread_client_config.current.object_id]
-  tags                         = values(local.tags)
+  tags                         = local.azuread_tags
 
   lifecycle {
     ignore_changes = [id]

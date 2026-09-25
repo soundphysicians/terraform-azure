@@ -50,6 +50,7 @@ No modules.
 | <a name="input_sql_ad_admin_object_id"></a> [sql\_ad\_admin\_object\_id](#input\_sql\_ad\_admin\_object\_id) | Object ID of database AD administrator | `any` | n/a | yes |
 | <a name="input_sql_ad_admin_username"></a> [sql\_ad\_admin\_username](#input\_sql\_ad\_admin\_username) | Username (email address) of the database AD administrator | `any` | n/a | yes |
 | <a name="input_sql_perf_level"></a> [sql\_perf\_level](#input\_sql\_perf\_level) | Database SKU | `string` | `"S0"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 
 ## Outputs
 

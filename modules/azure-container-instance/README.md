@@ -46,6 +46,7 @@ No modules.
 | <a name="input_secure_environment_variables"></a> [secure\_environment\_variables](#input\_secure\_environment\_variables) | Key-value collection of environment variables to be provided to the container securely | `map(any)` | `{}` | no |
 | <a name="input_service_bus_connection_string_name"></a> [service\_bus\_connection\_string\_name](#input\_service\_bus\_connection\_string\_name) | Name of the connection string secret in the Azure Key Vault | `string` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | The subnet to associate the container instance with. Can be null to use public IP addresses | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 | <a name="input_vnet_integration_enabled"></a> [vnet\_integration\_enabled](#input\_vnet\_integration\_enabled) | Is private networking enabled for this container instance | `bool` | `false` | no |
 
 ## Outputs

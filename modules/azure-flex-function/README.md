@@ -102,6 +102,7 @@ The module supports the following runtime configurations:
 | maximum_instance_count | The maximum number of instances to scale to | `number` | `100` | no |
 | instance_memory_in_mb | The memory size of instances (2048 or 4096) | `number` | `2048` | no |
 | storage_authentication_type | Authentication type for storage account | `string` | `"StorageAccountConnectionString"` | no |
+| tags | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 | app_settings | Key value pairs of application settings | `map(string)` | `{}` | no |
 | app_roles | List of Application scoped roles to support | `list(object)` | `[]` | no |
 | key_vault | Key vault to get secrets from | `object` | `null` | no |
@@ -222,6 +223,7 @@ The module will create resources with these names:
 | <a name="input_runtime_version"></a> [runtime\_version](#input\_runtime\_version) | The version of the language worker runtime | `string` | `"8.0"` | no |
 | <a name="input_storage_account_name"></a> [storage\_account\_name](#input\_storage\_account\_name) | Name of the storage account to use for the function app | `string` | `null` | no |
 | <a name="input_storage_authentication_type"></a> [storage\_authentication\_type](#input\_storage\_authentication\_type) | The type of authentication to use for the storage account (StorageAccountConnectionString, SystemAssignedIdentity, or UserAssignedIdentity) | `string` | `"StorageAccountConnectionString"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 
 ## Outputs
 

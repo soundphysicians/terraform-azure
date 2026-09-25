@@ -27,3 +27,9 @@ variable "should_create" {
   description = "Should the registry be created in this environment"
   default     = false
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource."
+  default     = {}
+}
