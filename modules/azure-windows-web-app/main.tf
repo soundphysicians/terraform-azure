@@ -53,10 +53,16 @@ resource "time_rotating" "webapp_secret" {
 }
 
 locals {
-  tags = {
+  base_tags = {
     project     = var.project
     environment = var.environment
   }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
+  azuread_tags             = [for v in values(local.base_tags) : v if v != null && v != ""]
 
   # Role Definitions
   role_user_impersonation = {
@@ -187,7 +193,7 @@ resource "azuread_application" "webapp" {
     }
   }
 
-  tags = values(local.tags)
+  tags = local.azuread_tags
 }
 
 #--------------------------------------------------------------
@@ -203,9 +209,9 @@ resource "azuread_application_pre_authorized" "azure-cli" {
 # Web App Registration Password: Creates a client secret for the web app
 #--------------------------------------------------------------
 resource "azuread_application_password" "webapp_1" {
-  application_id    = azuread_application.webapp.id
-  display_name      = "Client Secret for ${local.app_name} (1)"
-  end_date          = timeadd(timestamp(), var.client_secret_end_date_relative)
+  application_id = azuread_application.webapp.id
+  display_name   = "Client Secret for ${local.app_name} (1)"
+  end_date       = timeadd(timestamp(), var.client_secret_end_date_relative)
   rotate_when_changed = var.client_secret_rotation_days == null ? null : {
     rotation = time_rotating.webapp_secret[0].id
   }
@@ -231,7 +237,7 @@ resource "azuread_service_principal" "webapp" {
   alternative_names            = []
   notification_email_addresses = []
   owners                       = local.principal_owners
-  tags                         = values(local.tags)
+  tags                         = local.azuread_tags
 
   lifecycle {
     ignore_changes = [id]
@@ -303,8 +309,8 @@ resource "azurerm_service_plan" "webapp" {
   name                = local.plan_name
   location            = data.azurerm_resource_group.app.location
   resource_group_name = data.azurerm_resource_group.app.name
-  os_type = "Windows"
-  sku_name = var.web_app_sku_name
+  os_type             = "Windows"
+  sku_name            = var.web_app_sku_name
 
   tags = local.tags
 }
@@ -370,10 +376,10 @@ resource "azurerm_windows_web_app" "webapp" {
 
   # Pass any application settings through, but include the required settings
   app_settings = merge(var.app_settings, {
-    "WEBSITE_RUN_FROM_PACKAGE"         = 1,
+    "WEBSITE_RUN_FROM_PACKAGE"          = 1,
     "AzureAd__ClientId"                 = azuread_application.webapp.client_id,
     "AzureAd__ClientSecret"             = azuread_application_password.webapp_1.value,
-    "AZURE_CLIENT_ID"                  = azuread_application.webapp.client_id,
+    "AZURE_CLIENT_ID"                   = azuread_application.webapp.client_id,
     "KeyVault__Enabled"                 = var.key_vault == null ? "false" : "true",
     "KeyVault__Environment"             = var.key_vault == null ? "" : var.environment,
     "KeyVault__Name"                    = var.key_vault == null ? "" : var.key_vault.name,

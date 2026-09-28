@@ -410,7 +410,7 @@ run "should_create_key_vault_access_policy" {
 
   variables {
     key_vault = {
-      name = "mie-shr-kv"
+      name                = "mie-shr-kv"
       resource_group_name = "mie-shr-rg"
     }
   }
@@ -421,12 +421,107 @@ run "should_create_key_vault_access_policy" {
   }
 
   assert {
-    condition     = length(azurerm_key_vault_access_policy.app[0].key_vault_id) > 1 
+    condition     = length(azurerm_key_vault_access_policy.app[0].key_vault_id) > 1
     error_message = "Should set key_vault_id"
   }
 
   assert {
-    condition     = length(azurerm_key_vault_access_policy.app[0].tenant_id) > 1 
+    condition     = length(azurerm_key_vault_access_policy.app[0].tenant_id) > 1
     error_message = "Should set tenant_id"
+  }
+}
+
+run "should_merge_additional_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "cost_center" = "1234"
+      "owner"       = "team-a"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "cost_center") == "1234"
+    error_message = "Should set cost_center tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "owner") == "team-a"
+    error_message = "Should set owner tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "environment") == var.environment
+    error_message = "Should preserve environment tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "project") == var.prefix
+    error_message = "Should preserve project tag on function app"
+  }
+}
+
+run "should_allow_caller_tags_to_override_base_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "Environment" = "custom-env"
+      "Project"     = "custom-project"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "Environment") == "custom-env"
+    error_message = "Caller Environment tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "Project") == "custom-project"
+    error_message = "Caller Project tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = !contains(keys(azurerm_function_app_flex_consumption.app.tags), "environment") && !contains(keys(azurerm_function_app_flex_consumption.app.tags), "project")
+    error_message = "Base tags should be removed when caller keys differ only by case"
+  }
+}
+
+run "should_not_pass_caller_tags_to_azuread_resources" {
+  command = plan
+
+  variables {
+    tags = {
+      "display"  = "HideApp"
+      "external" = "false"
+      "mdstaff"  = "true"
+      "owner"    = "platform-team"
+    }
+  }
+
+  assert {
+    condition     = toset(azuread_application.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD application should receive only base tag values"
+  }
+
+  assert {
+    condition     = toset(azuread_service_principal.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD service principal should receive only base tag values"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "display") == "HideApp"
+    error_message = "Should preserve HideApp tag on ARM resource"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "mdstaff") == "true"
+    error_message = "Should preserve true tag value on ARM resource"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "external") == "false"
+    error_message = "Should preserve false tag value on ARM resource"
   }
 }

@@ -35,6 +35,7 @@ No modules.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource Group Name | `string` | n/a | yes |
 | <a name="input_should_create"></a> [should\_create](#input\_should\_create) | Should the registry be created in this environment | `bool` | `false` | no |
 | <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id) | The Container Registry subscription | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 
 ## Outputs
 

@@ -237,3 +237,9 @@ variable "client_secret_rotation_days" {
     error_message = "The client_secret_rotation_days must be null or a positive whole number."
   }
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource."
+  default     = {}
+}

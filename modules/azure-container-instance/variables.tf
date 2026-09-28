@@ -89,6 +89,12 @@ variable "subnet_id" {
   nullable    = true
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource."
+  default     = {}
+}
+
 variable "secure_environment_variables" {
   description = "Key-value collection of environment variables to be provided to the container securely"
   type        = map(any)

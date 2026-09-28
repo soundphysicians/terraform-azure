@@ -269,3 +269,87 @@ run "should_accept_y1_sku_name" {
     error_message = "Should accept sku name Y1"
   }
 }
+
+run "should_merge_additional_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "cost_center" = "1234"
+      "owner"       = "team-a"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "cost_center") == "1234"
+    error_message = "Should set cost_center tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "owner") == "team-a"
+    error_message = "Should set owner tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "environment") == var.environment
+    error_message = "Should preserve environment tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "project") == var.prefix
+    error_message = "Should preserve project tag on function app"
+  }
+}
+
+run "should_allow_caller_tags_to_override_base_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "Environment" = "custom-env"
+      "Project"     = "custom-project"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "Environment") == "custom-env"
+    error_message = "Caller Environment tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "Project") == "custom-project"
+    error_message = "Caller Project tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = !contains(keys(azurerm_linux_function_app.app.tags), "environment") && !contains(keys(azurerm_linux_function_app.app.tags), "project")
+    error_message = "Base tags should be removed when caller keys differ only by case"
+  }
+}
+
+run "should_not_pass_caller_tags_to_azuread_resources" {
+  command = plan
+
+  variables {
+    tags = {
+      "display" = "HideApp"
+      "mdstaff" = "true"
+      "owner"   = "platform-team"
+    }
+  }
+
+  assert {
+    condition     = toset(azuread_application.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD application should receive only base tag values"
+  }
+
+  assert {
+    condition     = toset(azuread_service_principal.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD service principal should receive only base tag values"
+  }
+
+  assert {
+    condition     = lookup(azurerm_linux_function_app.app.tags, "mdstaff") == "true" && lookup(azurerm_linux_function_app.app.tags, "owner") == "platform-team"
+    error_message = "Should preserve caller tags on ARM resource"
+  }
+}

@@ -147,3 +147,9 @@ variable "deploy_using_slots" {
   type        = bool
   default     = false
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource."
+  default     = {}
+}

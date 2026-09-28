@@ -11,5 +11,6 @@ output "admin_username" {
 }
 
 output "admin_password" {
-  value = data.azurerm_container_registry.this.admin_password
+  value     = data.azurerm_container_registry.this.admin_password
+  sensitive = true
 }

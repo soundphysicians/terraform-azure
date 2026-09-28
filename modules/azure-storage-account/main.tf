@@ -14,14 +14,15 @@ locals {
   clean_base_name = replace(var.name.base_name == null ? "" : var.name.base_name, "/[^a-zA-Z0-9]/", "")
   name_override   = lower(var.name.name_override == null ? "" : var.name.name_override)
 
-  derived_tags = {
+  base_tags = {
     environment = local.environment,
     project     = local.prefix
   }
 
-  non_empty_tag_parameters = { for i, v in var.tags : i => v if v != null && v != "" }
-  non_empty_derived_tags   = { for i, v in local.derived_tags : i => v if v != null && v != "" }
-  tags                     = merge(local.non_empty_derived_tags, local.non_empty_tag_parameters)
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
 
   # Pass appsettings from variable with embedded defaults
   storage_account_name = lower(coalesce(local.name_override, "${local.prefix}${local.environment}sa${local.clean_base_name}"))

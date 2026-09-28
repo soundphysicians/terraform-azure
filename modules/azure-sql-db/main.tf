@@ -18,6 +18,16 @@ data "azurerm_client_config" "current" {}
 
 locals {
   env_supports_auditing = contains(["prd"], var.environment) ? true : false
+
+  base_tags = {
+    environment = var.environment
+    project     = var.prefix
+  }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
 }
 
 provider "azurerm" {
@@ -87,10 +97,7 @@ resource "azurerm_mssql_server" "server" {
     ]
   }
 
-  tags = {
-    environment = var.environment
-    project     = var.prefix
-  }
+  tags = local.tags
 }
 
 # ------------------------------------------------------------------------
@@ -114,10 +121,7 @@ resource "azurerm_mssql_database" "db" {
   sku_name             = var.sql_perf_level
   storage_account_type = "Geo" # Default: Geo
 
-  tags = {
-    environment = var.environment
-    project     = var.prefix
-  }
+  tags = local.tags
 }
 
 # ------------------------------------------------------------------------

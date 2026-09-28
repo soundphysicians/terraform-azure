@@ -159,3 +159,9 @@ variable "remote_debugging_enabled" {
   default     = false
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource."
+  default     = {}
+}
+

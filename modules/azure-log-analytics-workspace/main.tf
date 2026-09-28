@@ -1,8 +1,13 @@
 locals {
-  tags = {
+  base_tags = {
     project     = var.project
     environment = var.environment
   }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
 }
 
 resource "azurerm_log_analytics_workspace" "this" {

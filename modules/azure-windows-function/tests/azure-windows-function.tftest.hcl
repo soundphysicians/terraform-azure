@@ -212,3 +212,111 @@ run "should_create_function_app_slot_with_reasonable_defaults" {
     error_message = "Should not enable ftps by default"
   }
 }
+
+run "should_set_default_tags" {
+  command = plan
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "environment") == var.environment
+    error_message = "Should set environment tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "project") == var.prefix
+    error_message = "Should set project tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_user_assigned_identity.app.tags, "environment") == var.environment
+    error_message = "Should set environment tag on identity"
+  }
+
+  assert {
+    condition     = lookup(azurerm_service_plan.plan.tags, "environment") == var.environment
+    error_message = "Should set environment tag on service plan"
+  }
+}
+
+run "should_allow_additional_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "cost-center" = "1234"
+      "owner"       = "platform-team"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "cost-center") == "1234"
+    error_message = "Should set cost-center tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "owner") == "platform-team"
+    error_message = "Should set owner tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "environment") == var.environment
+    error_message = "Should preserve environment tag on function app"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "project") == var.prefix
+    error_message = "Should preserve project tag on function app"
+  }
+}
+
+run "should_allow_caller_tags_to_override_base_tags" {
+  command = plan
+
+  variables {
+    tags = {
+      "Environment" = "custom-env"
+      "Project"     = "custom-project"
+    }
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "Environment") == "custom-env"
+    error_message = "Caller Environment tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "Project") == "custom-project"
+    error_message = "Caller Project tag should override base tag and preserve its key"
+  }
+
+  assert {
+    condition     = !contains(keys(azurerm_windows_function_app.app.tags), "environment") && !contains(keys(azurerm_windows_function_app.app.tags), "project")
+    error_message = "Base tags should be removed when caller keys differ only by case"
+  }
+}
+
+run "should_not_pass_caller_tags_to_azuread_resources" {
+  command = plan
+
+  variables {
+    tags = {
+      "display" = "HideApp"
+      "mdstaff" = "true"
+      "owner"   = "platform-team"
+    }
+  }
+
+  assert {
+    condition     = toset(azuread_application.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD application should receive only base tag values"
+  }
+
+  assert {
+    condition     = toset(azuread_service_principal.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD service principal should receive only base tag values"
+  }
+
+  assert {
+    condition     = lookup(azurerm_windows_function_app.app.tags, "mdstaff") == "true" && lookup(azurerm_windows_function_app.app.tags, "owner") == "platform-team"
+    error_message = "Should preserve caller tags on ARM resource"
+  }
+}

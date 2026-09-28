@@ -12,9 +12,8 @@ terraform {
 }
 
 provider "azurerm" {
-  skip_provider_registration = true
-  alias                      = "shared"
-  subscription_id            = var.subscription_id
+  alias           = "shared"
+  subscription_id = var.subscription_id
   features {}
 }
 
@@ -31,6 +30,16 @@ resource "azurecaf_name" "registry" {
 locals {
   environment   = "shr"
   registry_name = coalesce(var.name, azurecaf_name.registry.result)
+
+  base_tags = {
+    environment = local.environment,
+    project     = var.project
+  }
+
+  non_empty_tag_parameters = { for i, v in coalesce(var.tags, {}) : i => v if v != null && v != "" }
+  caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
+  non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
+  tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
 }
 
 # ----------------------------------------------
@@ -58,10 +67,7 @@ resource "azurerm_container_registry" "this" {
     ]
   }
 
-  tags = {
-    environment = local.environment,
-    project     = var.project
-  }
+  tags = local.tags
 }
 
 # ----------------------------------------------

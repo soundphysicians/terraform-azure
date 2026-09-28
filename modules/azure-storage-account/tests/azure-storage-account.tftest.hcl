@@ -85,7 +85,7 @@ run "should_create_storage_account_with_name_override_if_provided" {
   }
 }
 
-run "should_create_storage_account_without_tags_if_not_provided_or_derived" {
+run "should_create_storage_account_without_tags_if_not_provided_or_base" {
   command = plan
 
   variables {
@@ -99,7 +99,7 @@ run "should_create_storage_account_without_tags_if_not_provided_or_derived" {
 
   assert {
     condition     = azurerm_storage_account.this.tags == null
-    error_message = "Should create tags as empty map when not provided or derived"
+    error_message = "Should create tags as empty map when not provided or base"
   }
 }
 
@@ -146,8 +146,8 @@ run "should_provide_tag_variables_with_provided_values" {
       name_override = "tsttddsamyoverride"
     }
     tags = {
-      "environment" = "tst",
-      "project"     = "myproject"
+      "Environment" = "tst",
+      "Project"     = "myproject"
     }
   }
 
@@ -157,17 +157,22 @@ run "should_provide_tag_variables_with_provided_values" {
   }
 
   assert {
-    condition     = azurerm_storage_account.this.tags["environment"] == "tst"
-    error_message = "Should pass first tag when provided"
+    condition     = azurerm_storage_account.this.tags["Environment"] == "tst"
+    error_message = "Should preserve the caller's Environment key and value"
   }
 
   assert {
-    condition     = azurerm_storage_account.this.tags["project"] == "myproject"
-    error_message = "Should pass second tag when provided"
+    condition     = azurerm_storage_account.this.tags["Project"] == "myproject"
+    error_message = "Should preserve the caller's Project key and value"
+  }
+
+  assert {
+    condition     = !contains(keys(azurerm_storage_account.this.tags), "environment") && !contains(keys(azurerm_storage_account.this.tags), "project")
+    error_message = "Should remove base tags when caller keys differ only by case"
   }
 }
 
-run "should_merge_tag_variable_with_derived_values" {
+run "should_merge_tag_variable_with_base_values" {
   command = plan
 
   variables {

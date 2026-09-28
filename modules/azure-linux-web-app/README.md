@@ -62,6 +62,7 @@ No modules.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group to place resources in | `string` | n/a | yes |
 | <a name="input_suffix"></a> [suffix](#input\_suffix) | The suffix which becomes the last segment of all resource names | `string` | n/a | yes |
 | <a name="input_supported_app_roles"></a> [supported\_app\_roles](#input\_supported\_app\_roles) | Set of roles that the application supports | <pre>list(object({<br/>    id           = string<br/>    description  = string<br/>    display_name = string<br/>    enabled      = bool<br/>    value        = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 | <a name="input_test_automation_application_id"></a> [test\_automation\_application\_id](#input\_test\_automation\_application\_id) | Application used for test automation | `string` | `null` | no |
 | <a name="input_web_app_sku_name"></a> [web\_app\_sku\_name](#input\_web\_app\_sku\_name) | The SKU for the web app plan. Possible values include: B1, B2, B3, D1, F1, P1v2, P2v2, P3v2, P0v3, P1v3, P2v3, P3v3, P1mv3, P2mv3, P3mv3, P4mv3, P5mv3, S1, S2, S3, SHARED, WS1, WS2, and WS3 | `string` | `"B1"` | no |
 
