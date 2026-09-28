@@ -488,28 +488,40 @@ run "should_allow_caller_tags_to_override_base_tags" {
   }
 }
 
-run "should_exclude_hideapp_tag_from_azuread_application_tags" {
+run "should_not_pass_caller_tags_to_azuread_resources" {
   command = plan
 
   variables {
     tags = {
-      "display" = "HideApp"
-      "owner"   = "platform-team"
+      "display"  = "HideApp"
+      "external" = "false"
+      "mdstaff"  = "true"
+      "owner"    = "platform-team"
     }
   }
 
   assert {
-    condition     = !contains(azuread_application.app.tags, "HideApp")
-    error_message = "Should exclude HideApp from Azure AD application tags"
+    condition     = toset(azuread_application.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD application should receive only base tag values"
   }
 
   assert {
-    condition     = contains(azuread_application.app.tags, "platform-team")
-    error_message = "Should include non-HideApp tag values in Azure AD application tags"
+    condition     = toset(azuread_service_principal.app.tags) == toset([var.environment, var.prefix])
+    error_message = "Azure AD service principal should receive only base tag values"
   }
 
   assert {
     condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "display") == "HideApp"
     error_message = "Should preserve HideApp tag on ARM resource"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "mdstaff") == "true"
+    error_message = "Should preserve true tag value on ARM resource"
+  }
+
+  assert {
+    condition     = lookup(azurerm_function_app_flex_consumption.app.tags, "external") == "false"
+    error_message = "Should preserve false tag value on ARM resource"
   }
 }

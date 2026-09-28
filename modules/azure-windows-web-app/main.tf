@@ -62,7 +62,7 @@ locals {
   caller_tag_keys          = toset([for key in keys(local.non_empty_tag_parameters) : lower(key)])
   non_empty_base_tags      = { for i, v in local.base_tags : i => v if v != null && v != "" && !contains(local.caller_tag_keys, lower(i)) }
   tags                     = merge(local.non_empty_base_tags, local.non_empty_tag_parameters)
-  azuread_tags             = [for v in values(local.tags) : v if lower(v) != "hideapp"]
+  azuread_tags             = [for v in values(local.base_tags) : v if v != null && v != ""]
 
   # Role Definitions
   role_user_impersonation = {
